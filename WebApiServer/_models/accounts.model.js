@@ -18,7 +18,10 @@ var accountSchema = new mongoose.Schema({
         type: Date,
         default : Date.now
     },
-  
+    Id_AccountType :{
+        type: String,
+        default :"5f897dfc7a0f1b7a330a6b3b" // id type Customer
+    }
   });
 
   var account = mongoose.model('Account',accountSchema,'Accounts');

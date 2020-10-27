@@ -17,12 +17,14 @@ const registerValidation = (data) =>{
         'string.min': `"Mật khẩu" phải có ít nhất {#limit} ký tự` ,
         'any.required': `"Mật khẩu" is a required field`
       }),
-      confirmPassword : Joi.string().min(6).required().messages({
+      confirmPassword : Joi.string().min(6).messages({
         'string.base': `"Mật khẩu" không được phép có 'ký tự'`,
         'string.empty': `"Mật khẩu" không được phép bỏ trống`,
         'string.min': `"Mật khẩu" phải có ít nhất {#limit} ký tự` ,
         'any.required': `"Mật khẩu" is a required field`
       }),
+      Id_AccountType: Joi.string(),
+       accountCreated: Joi.string(),
     });
     return schema.validate(data)
 }

@@ -23,12 +23,19 @@ app.use(bodyparser.json());
 //routes
 var routeProduct = require('./_routes/products.route')
 var routeAccount = require('./_routes/accounts.route')
+var routeProductTest = require('./_routes/productTest.route')
 
+app.use(express.static(__dirname+'/_public'));
 
 app.use('/products',routeProduct);
 
 app.use('/accounts',routeAccount);
 
+ app.use('/productTest',routeProductTest);
+
+ app.use('/nam', function (req,res,next) {
+   res.send()
+ })
 
 
 app.listen(port, () => {

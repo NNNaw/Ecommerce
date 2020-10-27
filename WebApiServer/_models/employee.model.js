@@ -1,10 +1,9 @@
-// const { string } = require('@hapi/joi');
-
 const mongoose = require('mongoose');
 
 
-var userSchema = new mongoose.Schema({
-    
+var employeeSchema = new mongoose.Schema({
+
+
     fullName : {
         type: String,
         required : false,
@@ -37,14 +36,21 @@ var userSchema = new mongoose.Schema({
         type:Date,
         default: "01/01/1999"
     },
+
+
     account:   {
         type: String,
         required : true,
         min : 6,
         max : 255
+    },
+    accountCreated:   {
+        type: String,
+        required : true,
+      
     }
   });
 
-  var User = mongoose.model('User',userSchema,'Users');
+  var Employee = mongoose.model('Employee',employeeSchema,'Employees');
 
-  module.exports = User;
+  module.exports = Employee;

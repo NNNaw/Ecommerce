@@ -1,10 +1,7 @@
-// const { string } = require('@hapi/joi');
-
 const mongoose = require('mongoose');
 
 
-var userSchema = new mongoose.Schema({
-    
+var customerSchema = new mongoose.Schema({
     fullName : {
         type: String,
         required : false,
@@ -43,8 +40,9 @@ var userSchema = new mongoose.Schema({
         min : 6,
         max : 255
     }
+   
   });
 
-  var User = mongoose.model('User',userSchema,'Users');
+  var Customer = mongoose.model('Customer',customerSchema,'Customers');
 
-  module.exports = User;
+  module.exports = Customer;
