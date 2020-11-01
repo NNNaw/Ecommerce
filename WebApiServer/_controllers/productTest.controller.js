@@ -20,9 +20,7 @@ module.exports.GetDetail = async function(req, res) {
     var regex = new RegExp([string]);
     console.log(regex);
     // Creates a regex of: /^SomeStringToFind$/i
-    var products = await ProductTest.find( { nameProduct: regex } );
-
-
+    var products = await ProductTest.find({ nameProduct: regex });
     res.json(products);
  };
 

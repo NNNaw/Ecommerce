@@ -1,0 +1,9 @@
+
+FrontEnd
+f5 mất state.user
+backward after logout
+
+update image (top right no working)
+
+
+break content (html)

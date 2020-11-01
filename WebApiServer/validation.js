@@ -23,8 +23,10 @@ const registerValidation = (data) =>{
         'string.min': `"Mật khẩu" phải có ít nhất {#limit} ký tự` ,
         'any.required': `"Mật khẩu" is a required field`
       }),
-      Id_AccountType: Joi.string(),
+       Id_AccountType: Joi.string(),
        accountCreated: Joi.string(),
+       displayName : Joi.string(),
+     
     });
     return schema.validate(data)
 }

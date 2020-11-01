@@ -7,10 +7,15 @@ const verify = require('./verifyToken')
 
 
 // define the home page route
-router.get('/',verify, controller.index);
+router.get('/', controller.GetAllProduct);
+
+// router.get('/',verify, controller.index);
+
 
 //get by id
-router.get('/:id', controller.byID);
+router.get('/:id', controller.GetById);
+router.get('/GetByIdCategory/:id', controller.GetByIdCategory);
+router.get('/SearchList/:key', controller.GetListSearch);
 
 router.post('/',controller.addProduct);
 router.delete('/:id',controller.deleteProduct);

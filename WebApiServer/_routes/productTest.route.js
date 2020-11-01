@@ -1,8 +1,9 @@
 var express = require('express')
 var router = express.Router()
+var controller = require('../_controllers/productTest.controller');
+
 var multer  = require('multer')
 const path = require('path');
-var controller = require('../_controllers/productTest.controller');
 
 const storage = multer.diskStorage({
     destination: './_public/uploads/',
