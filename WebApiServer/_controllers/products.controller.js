@@ -14,7 +14,17 @@ module.exports.GetById = async function (req, res) {
     var products = await Product.findOne({ _id: id });
     res.json(products);
 };
+module.exports.deleteProduct = async function (req, res) {
 
+    console.log(req.params.id)
+
+    try {
+        const deleteProduct = await Product.remove({ _id: req.params.id });
+        res.json(deleteProduct);    
+    } catch (error) {
+        res.json({ message: error })
+    }
+}
 module.exports.GetByIdCategory = async function (req, res) {
     var id = req.params.id;
 
@@ -112,12 +122,3 @@ module.exports.updateProduct = async (req, res) => {
 
 
 
-module.exports.deleteProduct = async function (req, res) {
-
-    try {
-        const deleteProduct = await Product.remove({ _id: req.params.id });
-        res.json(deleteProduct);
-    } catch (error) {
-        res.json({ message: err })
-    }
-}

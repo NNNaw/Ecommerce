@@ -40,7 +40,7 @@ router.get('/', controller.GetAll)
 router.get('/:id', controller.GetDetail)
 router.get('/DanhSachSanPhamTimKiem/:key', controller.GetListSearch)
 // router.post('/', upload.single('imageProduct'),controller.addProduct)
- router.post('/', upload ,controller.addProduct)
+router.post('/',upload ,controller.addProduct)
 
 
 module.exports = router
