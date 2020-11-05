@@ -52,8 +52,6 @@ app.use('/paymentMethod', routePaymentMethod);
 app.use('/order', routeOrder);
 app.use('/productTest', routeProductTest);
 
-
-
 app.use('/brandCategory', routeBrandCategory);
 
 

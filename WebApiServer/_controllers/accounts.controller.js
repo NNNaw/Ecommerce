@@ -77,7 +77,13 @@ module.exports.Login = async function (req, res) {
         break
       }
     default:
+
+
       var userExist = await Customer.findOne({ account: accountExist.account });
+
+
+
+
       const { account, fullName, address, phoneNumber, identitycard, gender, birthday, image, displayName } = userExist;
 
       var UserAccount = { // detail account + user = token
@@ -173,7 +179,7 @@ module.exports.Register = async function (req, res) {
         phoneNumber: 1711061117,
         identitycard: 1711061117,
         gender: "Nam",
-        birthDay: Date.now
+        birthDay: Date.now()
       });
       break;
 
@@ -187,6 +193,7 @@ module.exports.Register = async function (req, res) {
     // save user to db
     //  const saveUser = await user.save();
 
+    console.log(user)
 
     const xyz = await Promise.all([account.save(), user.save()]);
 
@@ -210,13 +217,15 @@ module.exports.Register = async function (req, res) {
   }
 }
 
-module.exports.GetCustomer = async function (req, res) {
+module.exports.GetCustomer = async function (req, res) {  
   let accountId = req.params.id; // user name
-  console.log(req.params.id)
+  console.log("GetCustomer" , req.params.id)
+
   var account = await Account.findOne({ account: accountId });
   var customer = await Customer.findOne({ account: accountId });
 
   let infoAccount = { // detail info aaccount
+  
 
     account: account.account,
 
@@ -232,6 +241,7 @@ module.exports.GetCustomer = async function (req, res) {
     identitycard: customer.identitycard,
     gender: customer.gender,
     birthDay: customer.birthDay
+    
   }
 
   res.json(infoAccount);
@@ -242,6 +252,8 @@ module.exports.GetCustomer = async function (req, res) {
 
 
 module.exports.UpdateCustomer = async function (req, res) {
+
+
   try {
 
     const updateCustomer = await Customer.updateOne(
@@ -306,8 +318,9 @@ module.exports.ChangePassword = async function (req, res) {
 
 
 module.exports.updateImage = async function (req, res) {
-  try {
 
+  try {
+   
     var type = checkRole(req.Id_AccountType)
     console.log(type)
     let updateImage;
@@ -334,13 +347,13 @@ module.exports.updateImage = async function (req, res) {
         res.status(400).message("Not found")
         break;
     }
-
-
     res.json(updateImage);
 
 
   } catch (error) {
+
     res.json({ message: err })
+
   }
 }
 

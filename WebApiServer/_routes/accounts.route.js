@@ -55,8 +55,27 @@ router.post('/login', controller.Login);
 
 router.patch('/ChangePassword/:id', controller.ChangePassword);
 router.patch('/UpdateCustomer/:id', controller.UpdateCustomer);
+//  router.patch('/uploadimage/:id',upload, controller.updateImage);
 
-router.patch('/uploadimage/:id', upload, controller.updateImage);
+
+router.patch('/uploadimage/:id', (req, res, next) => {
+
+    upload(req, res, (err) => {
+        if (err instanceof multer.MulterError) {
+            // res.render('index', {
+            //   msg: err
+            // });
+
+            return res.status(418).send("File quá lớn");
+        } else {
+            if (req.file == undefined) {
+                res.json().statusMessage("'Error: No File Selected!'");
+            } else {
+                next();
+            }
+        }
+    });
+}, controller.updateImage);
 
 
 

@@ -1,9 +1,13 @@
 
 FrontEnd
 f5 mất state.user
-backward after logout
+
+backward after logout // done
 
 update image (top right no working)
 
-
 break content (html)
+
+backward (url) 
+
+xử lý role 

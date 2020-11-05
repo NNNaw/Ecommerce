@@ -49,5 +49,7 @@ router.get('/:id', controller.GetAllOrderByIdCustomer)
 router.post('/CreateOrder/:id', upload, controller.CreateOrder)
 router.delete('/CancelOrder/:id', controller.CancelOrder)
 
+router.patch('/ComfirmOrder/:id', controller.ConfirmOrder)
+
 
 module.exports = router
