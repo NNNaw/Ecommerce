@@ -95,7 +95,7 @@ module.exports.GetAllOrder = async function (req, res) {
 module.exports.GetAllOrderByIdCustomer = async function (req, res) {
 
 
-  
+
     let accountCustomer = req.params.id;
 
     var listOrders = await Order.find({ account: accountCustomer }); // list all order
@@ -105,7 +105,7 @@ module.exports.GetAllOrderByIdCustomer = async function (req, res) {
     let index = listOrders.length - 1;
     console.log("GetAllOrderByIdCustomer")
 
-    
+
     while (index >= 0) {
         let { _id, dateCheckout, dateCheckin, status, address, note } = listOrders[index]
 
@@ -124,12 +124,12 @@ module.exports.GetAllOrderByIdCustomer = async function (req, res) {
 
         let indexProduct = listProduct.length - 1;
 
-     
+
 
         while (indexProduct >= 0) {
-          
+
             let product = await Product.findOne({ _id: listProduct[indexProduct].Id_Product });
-            console.log(indexProduct , product.name)
+            console.log(indexProduct, product.name)
             let { _id, name, image, price } = product;
             let infoProduct = {
                 _id: _id,
@@ -345,7 +345,7 @@ module.exports.CreateOrder = async function (req, res) {
         });
 
         console.log(order)
-        
+
         const saveOrder = await order.save();
 
 
@@ -375,37 +375,40 @@ module.exports.ConfirmOrder = async function (req, res) {
     try {
         //update quantity product
 
-        let Order = await Order.findOne({ _id: req.body._id })
+        let order = await Order.findOne({ _id: req.body._id })
 
-        console.log(productOrders)
-        // let index = productOrders.length - 1
+
+
+        // { sku: "abc123" },
+        // { $inc: { quantity: -2, "metrics.orders": 1 } }
+
+
+        // let index = productOrders.length - 1 // descease quantity product
         // while (index >= 0) {
         //     let productItem = productOrders[index];
-
-
         //     const productUpdate = await Product.updateOne(
         //         { _id: productItem._id },
-        //         { $inc: { quantity: - productItem.quantity } }
+        //         { $inc: { quantity: -productItem.quantity } }
         //     );
-
-
         //     index--;
         // }
 
-        // const deleteOrder = await Order.updateOne(
-        //     { _id: req.params.id },
 
-        //     {
-        //         $set:
-        //         {
-        //             status: true,
-        //             dateCheckout: Date.now()
-        //         }
-        //     });
+        console.log(order)
 
+        const updateOrder = await Order.updateOne(
+            { _id: order._id },
 
+            {
+                $set:
+                {
+                    status: true,
+                    // dateCheckout: Date.now(),
+                    // Id_Employee: req.body.Id_Employee
+                }
+            });
 
-        // res.json(deleteOrder);
+        res.json(updateOrder);
     } catch (error) {
         res.json({ message: error })
 

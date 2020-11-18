@@ -12,7 +12,6 @@ var categorySchema = new mongoose.Schema({
     },
     dateCreated : {
         type: Date,
-        
         default : Date.now,
     },
     image : {

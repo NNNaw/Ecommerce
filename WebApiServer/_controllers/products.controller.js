@@ -5,58 +5,66 @@ const Product = require('../_models/products.model')
 
 // get all
 module.exports.GetAllProduct = async function (req, res) {
+        
+    console.log("Nam");
+    Product.find({  })
+    .then((data) => {
+        console.log('Data: ', data);
+       res.json(data);
+    })
+    .catch((error) => {
+        console.log('error: ', error);
+    });
 
-    let products = await Product.find();
+    // let products = await Product.find();
+    // let index = products.length - 1;
+    // let arrayProduct = []
+    // while (index >= 0) {
+    //     let product = products[index];
+    //     let productSent = {}
+    //     let employee = await Employee.findOne({ _id: product.Id_Employee });
+    //     let { account } = employee
+    //     let brand = await Brand.findOne({ _id: product.Id_Brand });
+    //     let { nameBrand } = brand
 
-
-    let index = products.length - 1;
-    let arrayProduct = []
-    while (index >= 0) {
-        let product = products[index];
-        let productSent = {}
-        let employee = await Employee.findOne({ _id: product.Id_Employee });
-        let { account } = employee
-        let brand = await Brand.findOne({ _id: product.Id_Brand });
-        let { nameBrand } = brand
-
-        let category = await Category.findOne({ _id: product.Id_Category });
-        let { nameCategory } = category
+    //     let category = await Category.findOne({ _id: product.Id_Category });
+    //     let { nameCategory } = category
 
 
 
-        let { _id, alias, name, price, image, descripts, material, origin, quantity,
-            ram, rom, operator, Id_Brand, Id_Category, Id_Employee } = products[index]
+    //     let { _id, alias, name, price, image, descripts, material, origin, quantity,
+    //         ram, rom, operator, Id_Brand, Id_Category, Id_Employee } = products[index]
 
-        productSent = {
+    //     productSent = {
 
-            _id: _id,
-            alias: alias,
-            name: name,
-            price: price,
-            descripts: descripts,
-            image: image,
-            material: material,
-            origin: origin,
-            quantity: quantity,
-            ram: ram,
-            rom: rom,
-            operator: operator,
-            nameCategory: nameCategory,
-            nameBrand: nameBrand,
+    //         _id: _id,
+    //         alias: alias,
+    //         name: name,
+    //         price: price,
+    //         descripts: descripts,
+    //         image: image,
+    //         material: material,
+    //         origin: origin,
+    //         quantity: quantity,
+    //         ram: ram,
+    //         rom: rom,
+    //         operator: operator,
+    //         nameCategory: nameCategory,
+    //         nameBrand: nameBrand,
 
-            accountCreatedProduct: account,
-            Id_Category: Id_Category,
-            Id_Brand: Id_Brand,
+    //         accountCreatedProduct: account,
+    //         Id_Category: Id_Category,
+    //         Id_Brand: Id_Brand,
 
-            Id_Employee: Id_Employee,
+    //         Id_Employee: Id_Employee,
 
-        }
+    //     }
 
-        arrayProduct.push(productSent);
-        index--;
-    }
+    //     arrayProduct.push(productSent);
+    //     index--;
+    // }
 
-    res.json(arrayProduct);
+    // res.json(products);
 };
 
 // get detail product
@@ -145,6 +153,15 @@ function replace_character(str) {
     return str;
 }
 
+
+function createAliasProduct(nameBrand, nameCategory, nameProduct) {
+    const aliasBrand = replace_character(nameBrand).toLowerCase().split(' ').join('-');
+    const aliasCategory = replace_character(nameCategory).toLowerCase().split(' ').join('-');
+    const aliasName = replace_character(nameProduct).toLowerCase().split(' ').join('-');
+    const alias = `${aliasBrand}/${aliasCategory}/${aliasName}`
+    return alias;
+}
+
 module.exports.AddProduct = async function (req, res) {
 
     // check alias product is exist
@@ -153,18 +170,24 @@ module.exports.AddProduct = async function (req, res) {
     // if (aliasProductExist) return res.status(400).send("alias already exists.");
 
 
+    let brand = await Brand.findOne({ _id: req.body.Id_Brand });
+    let category = await Category.findOne({ _id: req.body.Id_Category });
+    const alias = createAliasProduct(brand.nameBrand, category.nameCategory, req.body.name)
 
+    let checkalias = await Product.findOne({ name: req.body.name });
+    if (checkalias !== null) {
+
+        return res.status(400).send("Tên  sản phẩm đã tồn tại, vui lòng thay tên mới....");
+    }
 
     try {
 
 
-        const aliasProduct = replace_character(req.body.name).toLowerCase().split(' ').join('-');
 
         let employee = await Employee.findOne({ account: req.params.id });
-
         const product = new Product({
             name: req.body.name,
-            alias: aliasProduct,
+            alias: alias,
             price: req.body.price,
             quantity: req.body.quantity,
             ram: req.body.ram,
@@ -182,7 +205,7 @@ module.exports.AddProduct = async function (req, res) {
         const saveProduct = await product.save();
         res.json(saveProduct);
     } catch (err) {
-        res.json({ message: "Lỗi cc" })
+        res.json({ message: "Lỗi!!" })
     }
 }
 

@@ -12,7 +12,7 @@ router.get('/', controller.GetAllCategory);
 //get by id
 // router.get('/:id', controller.byID);
 
-// router.post('/',controller.addProduct);
+router.post('/',controller.addCategory);
 // router.delete('/:id',controller.deleteProduct);
 // router.patch('/:id',controller.updateProduct);
 module.exports = router

@@ -4,10 +4,6 @@ var router = express.Router()
 var controller = require('../_controllers/products.controller');
 const verify = require('./verifyToken')
 
-
-
-
-
 var multer = require('multer')
 const path = require('path');
 
@@ -74,7 +70,6 @@ router.post('/:id', (req, res, next) => {
         }
     });
 }, controller.AddProduct);
-
 
 router.delete('/:id', controller.deleteProduct);
 router.patch('/:id', controller.updateProduct);

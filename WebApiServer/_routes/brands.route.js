@@ -10,7 +10,7 @@ var controller = require('../_controllers/brands.controller');
 router.get('/', controller.GetAllBrand);
 
 //get by id
-// router.get('/:id', controller.byID);
+ router.get('/:id', controller.GetAllBrandByID);
 
 // router.post('/',controller.addProduct);
 // router.delete('/:id',controller.deleteProduct);
