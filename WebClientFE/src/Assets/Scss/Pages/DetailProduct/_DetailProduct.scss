@@ -1,0 +1,85 @@
+.DetailProduct {
+    margin: 50px 0;
+    .DetailProduct-content {
+        background-color: white;
+        padding: 30px 0;
+        .DetailProduct-left {
+            padding: 10px 0;
+            .text-title-header {
+                padding-left: 30px;
+            }
+            .class-img {
+                text-align: center;
+                img {
+                    width: 60%;
+                    margin: auto;
+                }
+            }
+            .class-info-product-bottom {
+                text-align: center;
+                .text-rating {
+                    .span-rating {
+                        vertical-align: bottom;
+                    }
+                }
+                .text-ppp {
+                    display: inline;
+                    span {
+                        font-weight: 400;
+                        line-height: 19px;
+                        font-size: 18px;
+                    }
+                }
+            }
+        }
+        .DetailProduct-right {
+            overflow: scroll;
+            max-height: 400px;
+            padding-right: 0;
+            .DetailProduct-list-info {
+                list-style: none;
+                .DetailProduct-info-item {
+                    p {
+                        font-weight: 400;
+                        line-height: 19px;
+                        font-size: 19px;
+                    }
+                    span {
+                        padding-left: 10px;
+                        font-weight: 300;
+                        line-height: 16px;
+                        font-size: 16px;
+                    }
+                }
+            }
+        }
+        .DetailProduct-middle {
+            .group-buttons {
+                display: flex;
+                justify-content: space-around;
+                padding-bottom: 50px;
+            }
+        }
+        .bg-class {
+            background-color: $color-white-cream;
+            height: 70px;
+            margin: 0;
+            width: 100%;
+        }
+        .introduction-product {
+            width: 90%;
+            margin: 0 auto;
+
+            .text-product {
+                 :first-child span{
+                 
+                    padding-left: 30px;
+                }
+                span{
+                    font-weight: bold;
+                    
+                }
+            }
+        }
+    }
+}

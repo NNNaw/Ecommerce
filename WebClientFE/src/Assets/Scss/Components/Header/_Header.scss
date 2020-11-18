@@ -1,0 +1,245 @@
+.header {
+    background-color: $color-white;
+    padding: 10px;
+    display: flex;
+    // position: fixed;
+    // top: 0;
+    // left: 0;
+    // z-index: 999;
+    // transition: 0.5s;
+    justify-content: space-between;
+    border-bottom: 1px solid black;
+    .header-left {
+        display: flex;
+        img {
+            width: 130px;
+            height: 70px;
+        }
+        .header-list-item {
+            list-style: none;
+            display: flex;
+            margin: auto;
+
+            .item-list {
+                padding: 0 10px;
+                color: $color-black;
+                transition: all 0.5s linear;
+                border-radius: 5px;
+                position: relative;
+                z-index: 1000;
+                &:focus {
+                    color: $color-green;
+                }
+                &:hover {
+                    background-color: $color-yellow-main;
+                }
+                &::after {
+                    content: "";
+                    height: 2px;
+                    background-color: red;
+                    transition: all 0.5s ease;
+                    width: 0%;
+                    bottom: 0;
+                    left: 50%;
+                    position: absolute;
+                }
+                &:hover:after {
+                    width: 100%;
+                    left: 0%;
+                }
+            }
+        }
+    }
+    .header-right {
+        width: 50%;
+
+        .dropdown {
+            box-shadow: none;
+            display: flex;
+            align-items: center;
+            .text-hello {
+                padding: 0 12px 0 20px;
+            }
+            .personal-div {
+                color: black;
+                display: flex;
+                align-items: center;
+                img {
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                }
+                p {
+                    margin-bottom: 0;
+                }
+                &:hover > .text-hello {
+                    span {
+                        color: $color-yellow-main;
+                        line-height: 17px;
+                    }
+                }
+            }
+
+            .dropdown-menu {
+                position: absolute;
+                top: 95%;
+                left: 15% !important;
+                .dropdown-item {
+                    &:hover {
+                        background-color: whitesmoke;
+                    }
+                }
+                .active {
+                    background-color: white;
+                    color: black;
+                    &:hover {
+                        background-color: whitesmoke;
+                       
+                    }
+                }
+            }
+            &:hover > .dropdown-menu {
+                display: block;
+            }
+        }
+        .dropdown-cart {
+            box-shadow: none;
+            display: flex;
+            align-items: center;
+
+            .btn-cart {
+                cursor: pointer;
+                border: 1px solid $color-black;
+                padding-top: 10px;
+                position: relative;
+                .LengthCart {
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                    color: white;
+                    width: 15px;
+                    height: 18px;
+                    border-radius: 50%;
+                    font-size: 12px;
+                    background-color: red;
+                }
+                i {
+                    font-size: 25px;
+                }
+                .text-cart {
+                    padding-top: 5px;
+                    font-size: 12px;
+                    line-height: 8px;
+                }
+                &:hover {
+                    background-color: $color-red-0;
+                    color: $color-white;
+                    .LengthCart {
+                        color: black;
+
+                        background-color: white;
+                    }
+                }
+            }
+            // .text-hello {
+            //     padding: 0 12px 0 20px;
+            // }
+            // img {
+            //     width: 50px;
+            //     height: 50px;
+            //     border-radius:50% ;
+            // }
+            .dropdown-item {
+                .text-header-card {
+                    font-size: 14px;
+                    line-height: 16px;
+                    font-weight: bolder;
+                    text-align: center;
+                    padding: 15px 0;
+                    border-bottom: 1px solid black;
+                }
+                &:hover {
+                    background-color: $color-white-cream;
+                }
+            }
+            .items-brief-cart {
+                display: flex;
+                justify-content: space-between;
+
+                img {
+                    width: 35px;
+                    height: 28px;
+                }
+                .text-cart-price {
+                    color: red;
+                }
+            }
+            .dropdown-menu {
+                position: absolute;
+                top: 95%;
+                left: -500% !important;
+                width: 400px;
+                .footer-brief-cart {
+                    text-align: right;
+                    margin-right: 25px;
+                }
+            }
+            &:hover > .dropdown-menu {
+                display: block;
+            }
+        }
+
+        .form-inline {
+            margin-right: auto;
+            .form-control {
+                border-radius: 0.25rem 0 0 0.25rem;
+                border: 1px solid $color-black;
+                height: 38px;
+                box-shadow: none;
+                border-right: none;
+                &:focus {
+                    border: 1px solid $color-black;
+                    border-right: none;
+                }
+                &:focus + .btn-search {
+                    border: 1px solid $color-black;
+                    border-left: none;
+                }
+            }
+
+            .btn-search {
+                border-radius: 0 0.25rem 0.25rem 0;
+                background-color: $color-white;
+                height: 38px;
+                width: 38px;
+                border: 1px solid $color-black;
+                border-left: none;
+                i {
+                    color: $color-yellow-main;
+                }
+                &:hover {
+                    background-color: $color-yellow-main;
+                    border: 1px solid $color-black;
+                    i {
+                        color: $color-white;
+                    }
+                }
+            }
+        }
+        .btn-group_Sign {
+            .btn_SignIn {
+                border: 1px solid $color-black;
+                margin-right: 10px;
+                &:hover {
+                    background-color: $color-white;
+                }
+            }
+            .btn_SignUp {
+                border: 1px solid $color-black;
+                &:hover {
+                    background-color: $color-white;
+                }
+            }
+        }
+    }
+}

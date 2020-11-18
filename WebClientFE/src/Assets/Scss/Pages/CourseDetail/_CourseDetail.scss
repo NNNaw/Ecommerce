@@ -1,0 +1,43 @@
+.courseDetail {
+    //  padding-bottom: 50px;
+    .courseDetail_container {
+        padding: 0;
+        .courseDetail_banner {
+            // background-image: url("../../../../Assets//Images/bg-bibleStudyTable.jpg");
+            // background-repeat: no-repeat;
+            // background-size: cover;
+            // position: relative;
+           
+           
+            // background-attachment: fixed;
+            // height: 500px;
+            // width: 100%;
+            .courseDetail_img {
+                position: absolute;
+                right: 10%;
+                bottom: 20%;
+                img{
+                    height: 300px;
+                    width: 500px;
+                    border-radius: 20px;
+                }
+            }
+
+            .courseDetail_banner_info {
+                position: absolute;
+                left: 30%;
+                bottom: 47%;
+                width: 300px;
+                p{
+                    color: white;
+                }
+                .courseDetail_bnt_dangky {
+                }
+            }
+        }
+        .courseDetail_info {
+            padding: 50px 15px;
+            
+        }
+    }
+}

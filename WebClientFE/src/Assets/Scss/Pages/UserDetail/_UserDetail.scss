@@ -1,0 +1,131 @@
+.DetailUser {
+    margin: 50px 0;
+    .DetailUser-content {
+        background-color: white;
+        padding: 20px 20px;
+
+        .DetailUser-content-info {
+            display: flex;
+            align-items: center;
+            .DetailUser-left {
+                height: 400px;
+                .DetailUser-img {
+                    position: absolute;
+                    left: 20%;
+                    top: 1%;
+
+                    img {
+                        cursor: pointer;
+                        width: 320px;
+                        height: 270px;
+                        border-radius: 50%;
+                        margin-bottom: 30px;
+                    }
+                    .button-updateing {
+                        position: relative;
+                        cursor: pointer;
+                        input {
+                            opacity: 0;
+                            z-index: 1;
+                            position: absolute;
+                            top: -1%;
+                            left: 25%;
+                            :hover {
+                                color: white;
+                                background-color: $color-yellow-main;
+                            }
+                        }
+                        .btn-updateImage {
+                            border: 1px solid black;
+                            padding: 5px;
+                            border-radius: 5px;
+                            position: absolute;
+                            top: 10%;
+                            left: 35%;
+                        }
+                        .btn-submitImage {
+                            position: absolute;
+                            top: 10%;
+                            left: 35%;
+                            z-index: 2;
+                        }
+                        .text-requiment {
+                            text-align: center;
+                            width: 200px;
+                            font-size: 14px;
+                            position: absolute;
+                            margin-top: 40px;
+                            left: 22%;
+                        }
+                    }
+                }
+            }
+            .DetailUser-right {
+                .text-header-title {
+                    text-align: center;
+                    border: 1px solid black;
+                    margin-bottom: 30px;
+                    .text-title {
+                        font-size: 21px;
+                        line-height: 22px;
+                        white-space: 1px;
+                        font-weight: bold;
+                    }
+                    .text-advice {
+                        font-size: 15px;
+                        line-height: 16px;
+                        white-space: 0.5px;
+                        font-weight: 350;
+                    }
+                }
+                .DetailUser-list {
+                    // list-style: none;
+                    .DetailUser-item {
+                        display: flex;
+                        align-items: center;
+
+                        padding: 10px;
+                        margin: 10px 5px;
+                        .text-changePassword {
+                            cursor: pointer;
+                            &:hover {
+                                span {
+                                    color: brown;
+                                }
+                            }
+                        }
+                        label,
+                        p {
+                            font-weight: bold;
+                            line-height: 17px;
+                            white-space: 1px;
+                            margin: 0;
+                            width: 150px;
+                        }
+
+                        input {
+                            padding: 5px 10px;
+                            border-radius: 5px;
+                            border: 0.5px solid $color-black-light;
+                            outline-color: $color-black;
+                            width: 200px;
+                        }
+                        .renderGender {
+                            .form-check-label {
+                                margin-right: 25px;
+                                width: 80px;
+                                .form-check-input {
+                                    width: 14px;
+                                    margin-right: 6px;
+                                }
+                            }
+                        }
+                    }
+                }
+                .btn-saveinfo {
+                    margin-left: 400px;
+                }
+            }
+        }
+    }
+}

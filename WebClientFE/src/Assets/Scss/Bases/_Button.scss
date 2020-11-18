@@ -1,0 +1,15 @@
+.btn_main{
+    background-color: $color-yellow-main;
+    color: $color-white;
+    transition: linear .25s;
+}
+.btn_Sign{
+    background-color: $color-white;
+    border: 1px solid $color-black;
+    border-radius: 5px;
+    transition: all linear .5s;
+    margin-left: 10px;
+    &:hover{
+        background-color: $color-yellow-main;
+    }
+}

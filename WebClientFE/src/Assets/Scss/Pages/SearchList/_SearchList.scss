@@ -1,0 +1,49 @@
+.SearchList {
+    margin-top: 50px;
+    .SearchList-content {
+        padding: 20px 0;
+        .SearchList-item {
+            background-color: white;
+            margin-bottom: 30px;
+            padding: 20px 10px;
+            .info-item-listSeart {
+                color: black;
+                display: flex;
+                cursor: pointer;
+                .SearchList-img {
+                    img {
+                        height: 200px;
+                        width: 250px;
+                    }
+                }
+
+                .SearchList-info {
+                    .text-title {
+                        font-weight: bold;
+                        line-height: 19px;
+                        font-size: 16px;
+                    }
+                }
+            }
+
+            &:hover {
+                box-shadow: 5px 5px 5px 5px #888888;
+                font-size: 18px;
+                .text-title {
+                    line-height: 25px;
+                    font-size: 22px;
+                }
+            }
+            .class-btn-addCart {
+                display: flex;
+                // flex-direction: row;
+                flex-wrap: nowrap;
+                justify-content: flex-end;
+                align-items: flex-end;
+                // align-content: stretch;
+                .btn-addCart {
+                }
+            }
+        }
+    }
+}

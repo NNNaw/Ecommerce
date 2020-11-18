@@ -1,0 +1,88 @@
+.TabQuanLyHoaDon {
+    #exampleModalCenter {
+        .modal-body {
+            .tab-content-item {
+                background-color: white;
+                margin-bottom: 30px;
+                height: 530px;
+                .info-order-left {
+                    height: 520px;
+
+                    overflow: scroll;
+                    padding: 15px 0;
+                    text-align: center;
+                    border-right: 1px solid black;
+                    a {
+                        color: black;
+                        width: 100%;
+                    }
+                    #infoOrderEachItem {
+                        display: flex;
+                        justify-self: center;
+                        padding: 20px 0;
+                        position: relative;
+
+                        .infoItem-order-left {
+                            cursor: pointer;
+
+                            // position: relative;
+                            // transition: .5 ;
+                            img {
+                                // position: absolute;
+                                // top: 30%;
+                                // left: 20%;
+                                width: 70px;
+                                height: 50px;
+                            }
+                        }
+                        .text-OrderProduct {
+                            text-align: left;
+                            p {
+                                font-weight: 400px;
+                                line-height: 16px;
+                                font-size: 17px;
+                                span {
+                                    color: red;
+                                }
+                            }
+                        }
+                        &:hover {
+                            background-color: $color-bg;
+                        }
+                        &::before {
+                            content: "";
+                            position: absolute;
+                            bottom: 0;
+                            left: 25%;
+                            border-top: 1px solid #ccc;
+                            width: 50%;
+                            height: 12px;
+                        }
+                    }
+                }
+
+                .info-order-right {
+                    padding: 15px 0;
+                    text-align: center;
+                    .text-info-order-right {
+                        width: 80%;
+                        margin: auto;
+                        text-align: left;
+                        p {
+                            span {
+                                font-size: 17px;
+                                line-height: 16px;
+                                font-weight: bold;
+                            }
+                        }
+                    }
+                    .bnt-reOrder {
+                        width: 80%;
+
+                        text-align: right;
+                    }
+                }
+            }
+        }
+    }
+}

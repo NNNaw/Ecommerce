@@ -1,0 +1,116 @@
+.TabQuanLySanPham {
+    .TabQuanLyKhoaHoc_Container {
+        .TabQuanLyNguoiDung_Top {
+            background-color: white;
+            .TabQuanLyNguoiDung_search {
+                text-align: right;
+                padding-right: 20px;
+                .form-xx {
+                    input {
+                        height: 40px;
+                    }
+                }
+            }
+        }
+
+        .table-content {
+            margin: 40px 0;
+            padding: 20px 0;
+            .table {
+                th,
+                td {
+                    background-color: white;
+                }
+                .tbl-body {
+                    .items-line {
+                        height: 150px;
+                        margin: 20px 0;
+                        cursor: pointer;
+                        &:hover {
+                            td {
+                                background-color: $color-white-cream;
+                                color: black;
+                                img {
+                                    width: 100px;
+                                    height: 80px;
+                                }
+                            }
+                        }
+
+                        td {
+                            vertical-align: middle;
+                            text-align: center;
+                            transition-duration: 0.5s;
+                            color: $color-black-0;
+                            img {
+                                width: 90px;
+                                height: 70px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    #exampleModalCenter {
+        .modal-body {
+            .modal-body-content {
+                .modal-body-content-left {
+                    text-align: center;
+                    img {
+                        width: 300px;
+                        min-height: 250px;
+                    }
+                    .button-updateing {
+                        margin-top: 20px;
+                        position: relative;
+                        cursor: pointer;
+                        input {
+                            opacity: 0;
+                            z-index: 1;
+                            position: absolute;
+                            top: -1%;
+                            left: 25%;
+                            :hover {
+                                color: white;
+                                background-color: $color-yellow-main;
+                            }
+                        }
+                        .btn-updateImage {
+                            border: 1px solid black;
+                            padding: 5px;
+                            border-radius: 5px;
+                            position: absolute;
+                            top: 10%;
+                            left: 35%;
+                        }
+                        .btn-submitImage {
+                            position: absolute;
+                            top: 10%;
+                            left: 35%;
+                            z-index: 2;
+                        }
+                        .text-requiment {
+                            text-align: center;
+                            width: 200px;
+                            font-size: 14px;
+                            position: absolute;
+                            margin-top: 40px;
+                            left: 22%;
+                        }
+                    }
+                }
+                .modal-body-content-right {
+                    .form-group {
+                        label {
+                            width: 30%;
+                        }
+                        input {
+                            width: 50%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

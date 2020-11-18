@@ -1,0 +1,45 @@
+body {
+    background-color: $color-white-cream;
+    .text-title {
+        @include text($color-black, $fs-3, $fw-normal);
+    }
+    .col-2,
+    .col-3,
+    .col-4,
+    .col-6 {
+        padding: 0;
+    }
+    .row{
+        margin: 0;
+    }
+}
+  // .nav-item {
+        //     // .nav-link {
+        //     //     color: $color-black;
+        //     //     border: 1px solid black;
+        //     //     transition: all 0.5s linear;
+        //     //     border-radius: 5px;
+        //     //     position: relative;
+        //     //     z-index: 1000;
+        //     //     &:focus {
+        //     //         color: $color-green;
+        //     //     }
+        //     //     &:hover {
+        //     //         background-color: $color-yellow-main;
+        //     //     }
+        //     //     &::after {
+        //     //         content: "";
+        //     //         height: 2px;
+        //     //         background-color: red;
+        //     //         transition: all 0.5s ease;
+        //     //         width: 0%;
+        //     //         bottom: 0;
+        //     //         left: 50%;
+        //     //         position: absolute;
+        //     //     }
+        //     //     &:hover:after {
+        //     //         width: 100%;
+        //     //         left: 0%;
+        //     //     }
+        //     // }
+        // }

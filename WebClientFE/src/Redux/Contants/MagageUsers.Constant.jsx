@@ -1,0 +1,7 @@
+export const actionTypes = {
+    LOGIN:"LOGIN",
+    LOGOUT:"LOGOUT",
+    REGISTER : "REGISTER",
+    GETINFOUSER :"GETINFOUSER",
+    GET_DETAIL_USER : "GET_DETAIL_USER", 
+}

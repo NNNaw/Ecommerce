@@ -1,0 +1,14 @@
+@mixin text($color,$fs,$fw) {
+    color:$color;
+    font-size: $fs;
+    font-weight: $fw;
+}
+@mixin button($bg-color,$pd-y, $pd-x,$bg-hover,$boder,$border-radius) {
+    background-color :$bg-color;
+    padding : $pd-y $pd-x;
+    border: $boder;
+    border-radius: $border-radius;
+    &:hover{
+        background-color: $bg-hover;
+    }
+}

@@ -1,0 +1,177 @@
+// .footer {
+//     background-color: $color-black;
+//     .footer_container {
+//         .footer-tittle {
+//             padding-top: 20px;
+//             .footer_h3_title {
+//                 @include text($color-white, $fs-3, $fw-normal);
+//                 letter-spacing: 1px;
+//             }
+//         }
+//         .footer_content {
+//             .footer_content_left {
+//                 .footer_descript_p {
+//                     @include text($color-white-cream, $fs-0, $fw-normal);
+//                 }
+//                 .footer_left_form {
+//                     display: flex;
+//                     .footer_form_email {
+//                         margin-right: 5px;
+//                     }
+//                     // .btn_footer_dangKy_left {
+//                     //     background-color: $color-yellow-main;
+//                     //     color: $color-white;
+//                     // }
+//                 }
+//             }
+//             .footer_content_middle {
+//                 .form-group {
+//                     input {
+//                         margin-bottom: 10px;
+//                     }
+//                 }
+//             }
+//         }
+//         .footer_info {
+//             .footer_info_left {
+//                 .menu_info {
+//                     list-style-type: none;
+//                     padding-left: 0;
+//                     .item_info {
+//                         @include text($color-white-cream, $fs-0, $fw-normal);
+//                         padding-bottom: 10px;
+//                         i {
+//                             padding-right: 5px;
+//                         }
+//                     }
+//                 }
+//             }
+//             .footer_infor_middle {
+//                 a {
+//                     @include text($color-white-cream, $fs-0, $fw-normal);
+//                     transition: linear .25s;
+//                     &:hover{
+//                         color: $color-yellow-main;
+//                     }
+//                 }
+//             }
+//         }
+//         .copy_right{
+//             border-top: 2px solid white;
+//             display: flex;
+//             justify-content: center;
+//             p{
+//                 padding: 10px 0;
+//                 @include text($color-white-cream, $fs-0, $fw-normal);
+//             }
+//         }
+//     }
+// }
+.footer {
+    .footer-content {
+        background-color: $color-white;
+        margin: 30px 0;
+
+        padding: 40px 0;
+        .footer-list {
+            .footer-item {
+                list-style: none;
+                padding: 5px 0;
+            }
+        }
+        .text-title {
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 15px;
+        }
+        .text-numberphone {
+            color: $color-red-2;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .text-bold {
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .footer-image1 {
+            display: flex;
+            padding: 10px 0;
+            img {
+                width: 50px;
+                height: 30px;
+            }
+        }
+        .footer-image {
+            display: flex;
+            padding: 10px 0;
+            img {
+                width: 90px;
+                height: 45px;
+            }
+        }
+    }
+    .footer-categories {
+        position: absolute;
+        right: 0;
+        top: 30%;
+        position: fixed;
+        z-index: 1;
+        overflow: hidden;
+        .list-cate {
+            list-style-type: none;
+            overflow: hidden;
+            li {
+                margin-bottom: 1px;
+                display: flex;
+                min-width: 200px;
+                background-color: #1e1e1e;
+                padding-left: 10px;
+                transform: translateX(77%);
+                transition: all 0.4s linear;
+                &:hover {
+                    transform: translateX(0%);
+                    right: 0;
+                    span {
+                        visibility: visible;
+                    }
+                }
+                a{
+                    text-decoration: none;
+                    @include text($color-white-0, $fs-0, $fw-normal);
+
+                    i {
+                        color: $color-white-0;
+                        width: 44px;
+                        height: 44px;
+                        line-height: 44px;
+                        font-size: 22px;
+                    }
+                    span {
+                        line-height: 44px;
+                        vertical-align: top;
+                        visibility: hidden;
+                    }
+                }
+            }
+            .item-cate-head {
+                border-top-left-radius: 3px;
+            }
+            .item-cate-tail {
+                border-bottom-left-radius: 3px;
+                .fa-envelope {
+                    &:hover {
+                        color: $color-blue-1;
+                    }
+                }
+            }
+        }
+    }
+
+
+
+    .last-text {
+        font-size: 10px;
+        text-align: center;
+    }
+}

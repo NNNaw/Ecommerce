@@ -1,0 +1,105 @@
+.Caterory {
+    margin-top: 100px;
+
+    .Category-content {
+        padding: 20px 0;
+        .Category-content-listBrand {
+            background-color: $color-white;
+            .Caterory-itemBrand {
+                text-align: center;
+                padding: 15px;
+                border: 0.5px solid $color-black-light;
+                margin: 15px 45px;
+                img {
+                    width: 70px;
+                    height: 60px;
+                    margin-top: 16px;
+                }
+                .text-namCate {
+                    font-weight: 400;
+                    line-height: 1.3;
+                    font-size: 15px;
+                }
+                &:hover {
+                    box-shadow: 5px 5px 5px 5px #888888;
+                }
+            }
+        }
+        .Category-content-product {
+            background-color: $color-white;
+            margin: 50px 0;
+            .card-item {
+                background-color: white !important;
+                border: 1px solid black;
+                max-width: 24%;
+                margin: 7px 5px;
+                text-align: center;
+                .top-card-item {
+                    cursor: pointer;
+                    position: relative;
+                    .card-showlist-body {
+                        height: 130px;
+                        .text-title-item {
+                            height: 60px;
+                            line-height: 25px;
+                        }
+
+                        .text-title-info {
+                            color: $color-red-2;
+                            font-weight: 400;
+                            font-size: 15px;
+                        }
+                    }
+
+                    img {
+                        padding: 10px 0;
+                        margin: auto;
+                        height: 230px;
+                        width: 90%;
+
+                        display: block;
+                    }
+
+                    .text-TraGop {
+                        position: absolute;
+                        top: 60%;
+                        left: 1%;
+                        background-color: #ea9d02;
+                        color: white;
+                        padding: 5px 7px;
+
+                        border-radius: 10%;
+                        p {
+                            margin-bottom: 0px;
+                            font-size: 13px;
+                            font-weight: 300;
+                            line-height: 15px;
+                            white-space: 1px;
+                        }
+                    }
+
+                    .text__overplay {
+                        position: absolute;
+
+                        bottom: 0;
+                        background-color: rgba(0, 0, 0, 0.7);
+                        width: 100%;
+                        height: 100%;
+                        color: white;
+                        transition: all 0.5s linear;
+                        transform: scaleY(0);
+                    }
+                    &:hover .text__overplay {
+                        transform: scaleY(1);
+                    }
+                }
+
+                .btn {
+                    margin: 5px;
+                }
+            }
+
+
+        }
+    }
+}
