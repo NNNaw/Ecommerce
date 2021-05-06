@@ -1,0 +1,14 @@
+.nav-header {
+    background-color: #252525;
+    padding: 10px 0;
+    .list-items-header {
+        display: flex;
+        justify-content: space-between;
+        list-style: none;
+        width: 100%;
+        margin: 0;
+        li {
+            color: white;
+        }
+    }
+}

@@ -1,20 +1,30 @@
 import React, { Fragment } from 'react';
-import { NavLink, Route } from 'react-router-dom';
+import { NavLink, Redirect, Route } from 'react-router-dom';
+import { settings } from '../../Commons/Settings';
+import { Roles } from '../../Commons/variable.common';
 // import { settings } from '../../Commons/Settings';
 import './EmployeeTemplate.css'
 
 
 
-let infoUser = JSON.parse(localStorage.getItem('infoUser'))
+// let userLoginLocal = JSON.parse(localStorage.getItem('userLoginLocal'))
+const userLoginLocal = JSON.parse(localStorage.getItem(settings.infoUser))
+let isAuthenticated = false;
+let role = "";
+if (userLoginLocal) {
+  isAuthenticated = true;
+  role = userLoginLocal.AccountType.name_AccountType;
+}
+
 
 const openNav = () => {
   //console.log("name")
-  document.getElementById("mySidenav").style.width = "250px";
-  document.getElementById("main").style.marginLeft = "250px";
+  // document.getElementById("mySidenav").style.width = "250px";
+  // document.getElementById("main").style.marginLeft = "250px";
 }
 const closeNav = () => {
-  document.getElementById("mySidenav").style.width = "0";
-  document.getElementById("main").style.marginLeft = "0";
+  // document.getElementById("mySidenav").style.width = "0";
+  // document.getElementById("main").style.marginLeft = "0";
 }
 
 
@@ -25,7 +35,7 @@ const EmployeeLayout = (props) => {
         <p className="closebtn" onClick={() => closeNav()}>x</p>
         <NavLink to={'/nhanvien/TabQuanLySanPham'}><p>Quản lý Sản Phẩm</p></NavLink>
         <NavLink to={'/nhanvien/TabQuanLyHoaDon'}><p>Quản lý Hóa Đơn</p></NavLink>
-        <NavLink to={`/nhanvien/ThongTinNhanVien/${infoUser.account}`}><p>Tài khoản của bạn</p></NavLink>
+        <NavLink to={`/nhanvien/ThongTinNhanVien/${userLoginLocal.account}`}><p>Tài khoản của bạn</p></NavLink>
 
       </div>
       <div id="main">
@@ -36,13 +46,13 @@ const EmployeeLayout = (props) => {
 
 
               <p className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span> Xin chào , {infoUser.account} </span>
+                <span> Xin chào , {userLoginLocal.account} </span>
               </p>
 
               <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
 
                 <NavLink to={"/"} className="dropdown-item">Trang chủ</NavLink>
-                <NavLink to={`/nhanvien/ThongTinNhanVien/${infoUser.account}`}
+                <NavLink to={`/nhanvien/ThongTinNhanVien/${userLoginLocal.account}`}
                   className="dropdown-item" >Thông tin nhân viên</NavLink>
 
 
@@ -63,10 +73,29 @@ const EmployeeLayout = (props) => {
   </Fragment>
 }
 
-export const EmployeeTemplate = ({ Component, ...props }) => (
-  <Route {...props} render={(propComponent) => (
-    <EmployeeLayout>
-      <Component {...propComponent} />
-    </EmployeeLayout>
-  )} />
+export const EmployeeTemplate = ({ Component, ...rest }) => (
+
+  <Route {...rest}
+    render={(props) => {
+      if (isAuthenticated && role === Roles.Employee) {
+        return (
+          <EmployeeLayout>
+            <Component {...props} />
+          </EmployeeLayout>
+        )
+      } else {
+
+        return (
+          <Redirect
+            to={{
+              pathname: "/privatePage",
+              state: {
+                from: props.location
+              }
+            }}
+          />
+        );
+      }
+    }} />
+
 )

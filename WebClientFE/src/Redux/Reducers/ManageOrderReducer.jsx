@@ -1,7 +1,6 @@
 import { actionTypes } from '../Contants/ManageOrder.Constant'
 
 const intialState = {
-
     Orders: [],
     ListOrderByIdCumstomer: [],
     listOrder: {

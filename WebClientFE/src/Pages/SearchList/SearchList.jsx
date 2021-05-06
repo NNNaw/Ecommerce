@@ -6,11 +6,8 @@ import { settings } from '../../Commons/Settings';
 import { GetListSearchProductAction, GetAllProductAction } from "./../../Redux/Actions/ManageProduct.Action"
 import swal from "sweetalert"
 import StarRatings from 'react-star-ratings';
-
+import { getParam, formatMoney } from '../../Commons/functionCommon';
 class SearchList extends Component {
-    formatMoney = (price) => {
-        return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-    }
 
     renderRating = (rating) => {
         return (
@@ -20,7 +17,7 @@ class SearchList extends Component {
                 // changeRating={this.changeRating}
                 numberOfStars={5}
                 starDimension="20px"
-                 starSpacing="10px"
+                starSpacing="10px"
                 name='rating'
             />
         )
@@ -29,18 +26,18 @@ class SearchList extends Component {
         return this.props.ListSearchProduct.map((element, index) => {
             return (
                 <div className="row SearchList-item" key={index}>
-                    <NavLink to={`/ThongTinSanPham/${element._id}`} className="col-10 info-item-listSeart" >
+                    <NavLink to={`/${element.alias}`} className="col-10 info-item-listSeart" >
                         <div className="col-4 SearchList-img">
-                            <img src={settings.domain + '/' + element.image} alt="Error" />
+                            <img src={element.images[0].url} alt="Error" />
                         </div>
                         <div className="col-8 SearchList-info">
                             <p className='text-title'>{element.name}</p>
-                            <p>Giá Bán : {this.formatMoney(element.price)} VNĐ</p>
+                            <p>Giá Bán : {formatMoney(element.price)}</p>
                             <p>Số lượng còn : {element.quantity}</p>
                             <p>Ram : {element.ram}, Rom : {element.rom}</p>
                             <p>Camera : 32Mpx, Màn hình : 5.8 Inch</p>
                             <div className="rating">
-                                {this.renderRating(1 + (Math.random() * (5 - 1)) ) }
+                                {this.renderRating(1 + (Math.random() * (5 - 1)))}
                             </div>
                         </div>
                     </NavLink>
@@ -55,23 +52,23 @@ class SearchList extends Component {
         })
     }
     componentDidMount = () => {
-        let key = this.props.match.params.key;
-        console.log(key)
 
-        this.props.GetListSearchProduct(key);
-
-
+        // let key = getParam(this.props.location.search, "search")
+        // console.log(key)
+        this.props.GetListSearchProduct(this.props.match.key);
     }
 
 
     componentDidUpdate = (prevProps) => {
-        let key = this.props.match.params.key;
-        if (!isEqual(key, prevProps.match.params.key)) {
-            // let key = this.props.match.params.key;
-            // console.log(key)
 
-            this.props.GetListSearchProduct(key);
+        // let key = getParam(this.props.location.search, "search")
+        const thisKey = this.props.match.params.key;
+        const prevKey = prevProps.match.params.key;
 
+
+
+        if (!isEqual(thisKey, prevKey)) {
+            this.props.GetListSearchProduct(thisKey);
         }
     }
 

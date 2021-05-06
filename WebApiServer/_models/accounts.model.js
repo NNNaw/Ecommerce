@@ -1,29 +1,37 @@
 const mongoose = require('mongoose');
 
-
 var accountSchema = new mongoose.Schema({
-    account : {
+
+    account: {
         type: String,
-        required : true,
-        min : 6,
-        max : 255
+        required: true,
+        min: 6,
+        max: 255
     },
-    password : {
+    password: {
         type: String,
-        required : true,
-        min : 6,
-        max : 255
+        required: true,
+        min: 6,
+        max: 255
     },
-    dateCreated : {
+    dateCreated: {
         type: Date,
-        default : Date.now
+        default: Date.now
     },
-    Id_AccountType :{
-        type: String,
-        default :"5f897dfc7a0f1b7a330a6b3b" // id type Customer
-    }
-  });
 
-  var account = mongoose.model('Account',accountSchema,'Accounts');
+    AccountType: {
+        _id: {
+            type: String,
+            required: true,
+        },
+        name_AccountType: {
+            type: String,
+            required: true,
+        }
+    },
+    
+});
 
-  module.exports = account;
+var account = mongoose.model('Account', accountSchema, 'Accounts');
+
+module.exports = account;

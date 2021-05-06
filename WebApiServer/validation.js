@@ -1,56 +1,57 @@
 const Joi = require('@hapi/joi');
 
 
-const registerValidation = (data) =>{
-  
+const registerValidation = (data) => {
+
   const schema = Joi.object().keys({
-      account : Joi.string().min(6).required().messages({
-        'string.base': `"Tài khoản" không được phép có 'ký tự'`,
-        'string.empty': `"Tài khoản" không được phép bỏ trống`,
-        'string.min': `"Tài khoản" phải có ít nhất {#limit} ký tự` ,
-        'any.required': `"Tài khoản" is a required field`
-      }),
-     
-      password : Joi.string().min(6).required().messages({
-        'string.base': `"Mật khẩu" không được phép có 'ký tự'`,
-        'string.empty': `"Mật khẩu" không được phép bỏ trống`,
-        'string.min': `"Mật khẩu" phải có ít nhất {#limit} ký tự` ,
-        'any.required': `"Mật khẩu" is a required field`
-      }),
-      confirmPassword : Joi.string().min(6).messages({
-        'string.base': `"Mật khẩu" không được phép có 'ký tự'`,
-        'string.empty': `"Mật khẩu" không được phép bỏ trống`,
-        'string.min': `"Mật khẩu" phải có ít nhất {#limit} ký tự` ,
-        'any.required': `"Mật khẩu" is a required field`
-      }),
-       Id_AccountType: Joi.string(),
-       accountCreated: Joi.string(),
-       displayName : Joi.string(),
-     
-    });
-    return schema.validate(data)
+    account: Joi.string().min(6).required().messages({
+      'string.base': `"Tài khoản" không được phép có 'ký tự'`,
+      'string.empty': `"Tài khoản" không được phép bỏ trống`,
+      'string.min': `"Tài khoản" phải có ít nhất {#limit} ký tự`,
+      'any.required': `"Tài khoản" is a required field`
+    }),
+
+    password: Joi.string().min(6).required().messages({
+      'string.base': `"Mật khẩu" không được phép có 'ký tự'`,
+      'string.empty': `"Mật khẩu" không được phép bỏ trống`,
+      'string.min': `"Mật khẩu" phải có ít nhất {#limit} ký tự`,
+      'any.required': `"Mật khẩu" is a required field`
+    }),
+    confirmPassword: Joi.string().min(6).messages({
+      'string.base': `"Mật khẩu" không được phép có 'ký tự'`,
+      'string.empty': `"Mật khẩu" không được phép bỏ trống`,
+      'string.min': `"Mật khẩu" phải có ít nhất {#limit} ký tự`,
+      'any.required': `"Mật khẩu" is a required field`
+    }),
+    name_AccountType: Joi.string(),
+    accountCreated: Joi.string(),
+    displayName: Joi.string(),
+    gender: Joi.string(),
+    Id_AccountType: Joi.string(),
+  });
+  return schema.validate(data)
 }
 
-const loginValidation = (data) =>{
-  
-    const schema = Joi.object().keys({
-        account : Joi.string().min(6).required().messages({
-          'string.base': `"Tài khoản" không được phép có 'ký tự'`,
-          'string.empty': `"Tài khoản" không được phép bỏ trống`,
-          'string.min': `"Tài khoản" phải có ít nhất {#limit} ký tự` ,
-          'any.required': `"Tài khoản" is a required field`
-        }),
-       
-        password : Joi.string().min(6).required().messages({
-          'string.base': `"Mật khẩu" không được phép có 'ký tự'`,
-          'string.empty': `"Mật khẩu" không được phép bỏ trống`,
-          'string.min': `"Mật khẩu" phải có ít nhất {#limit} ký tự` ,
-          'any.required': `"Mật khẩu" is a required field`
-        }),
+const loginValidation = (data) => {
+
+  const schema = Joi.object().keys({
+    account: Joi.string().min(6).required().messages({
+      'string.base': `"Tài khoản" không được phép có 'ký tự'`,
+      'string.empty': `"Tài khoản" không được phép bỏ trống`,
+      'string.min': `"Tài khoản" phải có ít nhất {#limit} ký tự`,
+      'any.required': `"Tài khoản" is a required field`
+    }),
+
+    password: Joi.string().min(6).required().messages({
+      'string.base': `"Mật khẩu" không được phép có 'ký tự'`,
+      'string.empty': `"Mật khẩu" không được phép bỏ trống`,
+      'string.min': `"Mật khẩu" phải có ít nhất {#limit} ký tự`,
+      'any.required': `"Mật khẩu" is a required field`
+    }),
 
 
-      });
-      return schema.validate(data)
+  });
+  return schema.validate(data)
 }
 
 module.exports.loginValidation = loginValidation;

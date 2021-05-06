@@ -4,13 +4,13 @@ const mongoose = require('mongoose');
 
 var accountTypeSchema = new mongoose.Schema({
 
-    name_AccountType:  {
+    name_AccountType: {
         type: String,
-        required : false,
-        default : "",
+        required: false,
+        default: "",
     }
-  });
+});
 
-  var AccountType = mongoose.model('AccountType',accountTypeSchema,'Account_Types');
+var AccountType = mongoose.model('AccountType', accountTypeSchema, 'Account_Types');
 
-  module.exports = AccountType;
+module.exports = AccountType;

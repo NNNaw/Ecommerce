@@ -1,14 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { settings } from '../../Commons/Settings'
 import {
     GetDetailUserAction, UpdateFileAction, UpdateCustomerAction,
     ChangePasswordCustomerAction
-} from './../../Redux/Actions/ManageUsers.Action'
+} from './../../Redux/Actions/ManageUsers.Action';
 
-import { isEqual, slice } from 'lodash'
-import { Fragment } from 'react'
-
+import { isEqual } from 'lodash';
+import { Fragment } from 'react';
+import { formatPage, getParam } from './../../Commons/functionCommon';
+import { settings } from '../../Commons/Settings';
+var dateFormat = require('dateformat');
 
 // import { NavLink } from 'react-router-dom'
 class UserDetail extends Component {
@@ -16,7 +17,7 @@ class UserDetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            customer: {
+            customer: this.props.DetailUser || {
                 account: "",
                 displayName: "",
                 fullName: "",
@@ -26,6 +27,8 @@ class UserDetail extends Component {
                 gender: "",
                 birthDay: "",
                 address: "",
+                Id_AccountType: "",
+                dateCreated: "",
             },
             account: {
                 // username: "",
@@ -43,12 +46,6 @@ class UserDetail extends Component {
         }
     }
 
-    formatDate = (str) => {
-        return slice(str, 0, 10)
-    }
-    formatPage = () => {
-        window.scrollTo(0, 0);
-    }
     renderButtonSubmit = (account, idType) => {
         return (
             <div className="btn-submitImage">
@@ -245,19 +242,22 @@ class UserDetail extends Component {
 
 
     render() {
-        let { account,
+
+        console.log('render')
+
+
+        let {
+            account,
             dateCreated,
             Id_AccountType,
-            // displayName,
-            // fullName,
-            // image,
-            // phoneNumber,
-            // identitycard,
-            // gender,
-            // birthDay,
-            // address,
-        } = this.props.DetailUser
-
+            displayName,
+            fullName,
+            image,
+            phoneNumber,
+            identitycard,
+            gender,
+            birthDay,
+            address, } = this.state.customer
         return (
 
             <div className="DetailUser">
@@ -265,7 +265,7 @@ class UserDetail extends Component {
                     <div className="row DetailUser-content-info">
                         <div className="col-6 DetailUser-left">
                             <div className="DetailUser-img">
-                                <img src={settings.domain + '/' + this.state.customer.image} alt="error"
+                                <img src={image} alt="error"
                                     data-toggle="modal" data-target="#modalAvatar" />
 
                                 <div className="button-updateing">
@@ -307,36 +307,38 @@ class UserDetail extends Component {
                                 </div>
                                 <div className='DetailUser-item'>
                                     <p>Ngày tạo : </p>
-                                    <p>{this.formatDate(dateCreated)}</p>
+                                    <p>{dateFormat(dateCreated, 'dd/mm/yyyy')}</p>
                                 </div>
                                 <div className='DetailUser-item'>
                                     <label htmlFor="displayName">Tên hiển thị : </label>
-                                    <input onChange={this.handleChange} type="text" name="displayName" id="displayName" value={this.state.customer.displayName} />
+                                    <input onChange={this.handleChange} type="text" name="displayName" id="displayName" value={displayName} />
                                 </div>
                                 <div className='DetailUser-item'>
                                     <label htmlFor="fullname">Họ tên : </label>
-                                    <input onChange={this.handleChange} type="text" name="fullName" id=" fullName" value={this.state.customer.fullName} />
+                                    <input onChange={this.handleChange} type="text" name="fullName" id=" fullName" value={fullName} />
                                 </div>
                                 <div className='DetailUser-item'>
                                     <label htmlFor="phoneNumber">Số điện thoại : </label>
-                                    <input onChange={this.handleChange} type="text" name="phoneNumber" value={this.state.customer.phoneNumber} />
+                                    <input onChange={this.handleChange} type="text" name="phoneNumber" value={phoneNumber} />
                                 </div>
 
                                 <div className='DetailUser-item'>
                                     <label htmlFor="identitycard">Chứng minh nhân dân : </label>
-                                    <input onChange={this.handleChange} type="text" name="identitycard" id="identitycard" value={this.state.customer.identitycard} />
+                                    <input onChange={this.handleChange} type="text" name="identitycard" id="identitycard" value={identitycard} />
                                 </div>
                                 <div className='DetailUser-item'>
                                     <label htmlFor="address">Địa chỉ : </label>
-                                    <input onChange={this.handleChange} type="text" name="address" id="address" value={this.state.customer.address} />
+                                    <input onChange={this.handleChange} type="text" name="address" id="address" value={address} />
                                 </div>
                                 <div className='DetailUser-item'>
                                     <p>Ngày sinh : </p>
-                                    <p>{this.formatDate(this.state.customer.birthDay)}</p>
+                                    <p>
+
+                                        {dateFormat(birthDay, 'dd/mm/yyyy')}</p>
                                 </div>
                                 <div className='DetailUser-item'>
                                     <label >Giới tính : </label>
-                                    {this.renderGender(this.state.customer.gender)}
+                                    {this.renderGender(gender)}
 
                                 </div>
                                 <button className="btn btn-success btn-saveinfo" type='submit'>Lưu</button>
@@ -363,7 +365,7 @@ class UserDetail extends Component {
                             <div className="modal-body container">
                                 <div className="row">
                                     <div className="col-6">
-                                        <img src={settings.domain + '/' + this.state.customer.image} alt="error" />
+                                        <img src={image} alt="error" />
                                     </div>
                                     <div className="col-6">
 
@@ -434,39 +436,77 @@ class UserDetail extends Component {
     }
 
     componentDidMount() {
-        let { account } = this.props.match.params;
-        this.props.GetDetailUser(account);
-        this.formatPage()
 
+
+
+        const infoUser = JSON.parse(localStorage.getItem(settings.infoUser))
+
+        if (infoUser._id !== getParam(this.props.location.search, "id")) {
+            this.props.history.push('/privatePage')
+        }
+
+        if (this.props.DetailUser === null) {
+            const id = getParam(this.props.location.search)
+            this.props.GetDetailUser(id);
+        }
+
+        formatPage()
+        // console.log('componentDidMount')
     }
 
     componentDidUpdate(prevProps, prevState) {
 
+        console.log('componentDidUpdate')
+        // if (isEqual(this.props.DetailUser, null)) {
+        //     let { account } = this.props.match.params;
+        //     this.props.GetDetailUser(account);
+        // }
 
         if (isEqual(this.state.customer.account, "")) {
+
+            let {
+                account,
+                displayName,
+                fullName,
+                image,
+                phoneNumber,
+                identitycard,
+                gender,
+                birthDay,
+                address,
+                Id_AccountType,
+                dateCreated,
+
+            } = this.props.DetailUser
             console.log("didUpdate")
             this.setState({
                 customer: {
-                    account: this.props.DetailUser.account,
-                    displayName: this.props.DetailUser.displayName,
-                    fullName: this.props.DetailUser.fullName,
-                    image: this.props.DetailUser.image,
-                    phoneNumber: this.props.DetailUser.phoneNumber,
-                    identitycard: this.props.DetailUser.identitycard,
-                    gender: this.props.DetailUser.gender,
-                    birthDay: this.props.DetailUser.birthDay,
-                    address: this.props.DetailUser.address,
+                    account: account,
+                    Id_AccountType: Id_AccountType,
+                    displayName: displayName,
+                    fullName: fullName,
+                    image: image,
+                    phoneNumber: phoneNumber,
+                    identitycard: identitycard,
+                    gender: gender,
+                    birthDay: birthDay,
+                    address: address,
+                    dateCreated: dateCreated
                 }
             })
 
         }
 
-        if (!isEqual(this.props.DetailUser.image, prevProps.DetailUser.image)) {
-            console.log("didUpdate")
-            this.setState({
-                customer: { ...this.state.customer, image: this.props.DetailUser.image }
-            })
-        }
+
+        // if (!isEqual(this.props.DetailUser.image, prevProps.DetailUser.image)) {
+        //     console.log("didUpdate")
+        //     this.setState({
+        //         customer: { ...this.state.customer, image: this.props.DetailUser.image }
+        //     })
+        // }
+
+
+
     }
 }
 

@@ -1,15 +1,13 @@
 import React, { Component } from 'react'
-import { GetAllProductAction, layDanhSachSanPhamPhanTrangAction } from "../../Redux/Actions/ManageProduct.Action"
-import { settings } from './../../Commons/Settings'
+import { layDanhSachSanPhamPhanTrangAction } from "../../Redux/Actions/ManageProduct.Action"
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom'
 import { AddProductCartAction } from '../../Redux/Actions/cartAction';
 import ReactPaginate from 'react-paginate';
 import './ShowList.css'
+import { formatMoney, formatPage } from './../../Commons/functionCommon';
+
 class ShowList extends Component {
-
-
-
 
     constructor(props) {
         super(props);
@@ -34,9 +32,7 @@ class ShowList extends Component {
             pageCount: count
         });
     }
-    formatPage = () => {
-        window.scrollTo(0, 0);
-   }
+
     handlePageClick = (e) => {
 
         const selectedPage = e.selected;
@@ -72,13 +68,12 @@ class ShowList extends Component {
         )
     }
 
-
-
-
-    formatMoney = (price) => {
-        return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-    }
-
+    // formatMoney = (price) => {
+    //     return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+    // }
+    // formatPage = () => {
+    //     window.scrollTo(0, 0);
+    // }
     renderListProduct = () => {
         return this.props.mangSanPhamPhanTrang.map((element, index) => {
 
@@ -86,11 +81,11 @@ class ShowList extends Component {
                 <div className="card col-3 card-item" key={index}>
                     <div className="top-card-item">
 
-                        <img src={settings.domain + '/' + element.image} alt="error" />
+                        <img src={element.images[0].url} alt="error" />
 
                         <div className="card-body card-showlist-body">
                             <h4 className="card-title text-title-item">{element.name}</h4>
-                            <p className="card-text text-title-info">{this.formatMoney(element.price)} VNĐ</p>
+                            <p className="card-text text-title-info">{formatMoney(element.price)}</p>
 
                         </div>
 
@@ -107,9 +102,9 @@ class ShowList extends Component {
                         </div>
                     </div>
 
-
-                    <button className='btn btn-success' onClick={() => { this.props.AddProductCart(element) }}>Thêm giỏ hàng</button>
-                    <NavLink className="btn btn-danger" to={`/ThongTinSanPham/${element._id}`}>
+                    <button className='btn btn-success'
+                     onClick={() => { this.props.AddProductCart(element._id, false, true) }}>Thêm giỏ hàng</button>
+                    <NavLink className="btn btn-danger" to={`/chi-tiet-san-pham/${element._id}`}>
                         Chi Tiết
                     </NavLink>
 
@@ -139,9 +134,9 @@ class ShowList extends Component {
 
 
     componentDidMount() {
-        this.formatPage();
+        formatPage();
         //lấy giá trị tham số từ url this.props.match.params.tenThamS
-        this.props.GetAllProduct();
+        // this.props.GetAllProduct();
         this.props.layDanhSachSanPhamPhanTrang(this.state.page.offset, this.state.page.perPage, this.set)
     }
 
@@ -149,25 +144,23 @@ class ShowList extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        ListProducts: state.ManageProductReducer.Products ,// lấy data từ reducer
-        mangSanPhamPhanTrang : state.ManageProductReducer.mangSanPhamPhanTrang
+        ListProducts: state.ManageProductReducer.Products,// lấy data từ reducer
+        mangSanPhamPhanTrang: state.ManageProductReducer.mangSanPhamPhanTrang
     };
 }
-
-
 
 const mapDispatchToProps = dispatch => {
     return {
 
-        GetAllProduct: () => {
-            dispatch(GetAllProductAction())
+        // GetAllProduct: () => {
+        //     dispatch(GetAllProductAction())
+        // },
+
+
+        AddProductCart: (productClicked, isDeCrease, isAdd) => {
+            dispatch(AddProductCartAction(productClicked, isDeCrease, isAdd))
         },
-
-
-        AddProductCart: (productClicked) => {
-            dispatch(AddProductCartAction(productClicked))
-        }, 
-        layDanhSachSanPhamPhanTrang :(offset, perPage, set)=>{
+        layDanhSachSanPhamPhanTrang: (offset, perPage, set) => {
             dispatch(layDanhSachSanPhamPhanTrangAction(offset, perPage, set))
         }
     }

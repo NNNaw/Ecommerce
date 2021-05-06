@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { LoginUserAction } from '../../Redux/Actions/ManageUsers.Action'
 import './Login.css'
 import { NavLink } from 'react-router-dom'
+import fakeAuth from '../../Commons/fakeAuth.common';
 
 class Login extends Component {
 
@@ -23,9 +24,11 @@ class Login extends Component {
             user: { ...this.state.user, [name]: value }
         })
     }
-    handleLogin = (stringURL) => {
-        this.props.history.push(stringURL); // ra trang home
-
+    handleLogin = (URL, role) => {
+        fakeAuth.authenticate(() => {
+            this.props.history.push(URL); // ra trang home
+            console.log(role)
+        }, role)
     }
     checked = () => {
         this.setState({
@@ -39,7 +42,7 @@ class Login extends Component {
         this.props.LoginUser(this.state.user, this.state.checkRemeber, this.handleLogin)// đưa dữ liệu lên action 
 
     }
-  
+
     render() {
         return (
             <div className='SignIn'>
@@ -60,7 +63,8 @@ class Login extends Component {
                                         <div className="input-group-prepend">
                                             <span className="input-group-text"><i className="fas fa-user" /></span>
                                         </div>
-                                        <input type="text" className="form-control" placeholder="Nhập tài khoản" id="account" name='account' value={this.state.user.account} onChange={this.handleChange} />
+                                        <input type="text" className="form-control"
+                                         placeholder="Nhập tài khoản" id="account" name='account' value={this.state.user.account} onChange={this.handleChange} />
                                     </div>
                                     <div className="input-group form-group">
                                         <div className="input-group-prepend">
@@ -83,7 +87,7 @@ class Login extends Component {
                                     Don't have an account? <NavLink to="/dangky">Sign Up</NavLink>
                                 </div>
                                 <div className="d-flex justify-content-center">
-                                   
+
                                 </div>
                             </div>
                         </div>

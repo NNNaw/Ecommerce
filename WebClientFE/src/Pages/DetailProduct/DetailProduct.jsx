@@ -1,24 +1,46 @@
 import React, { Component } from 'react'
-import { settings } from './../../Commons/Settings'
 import { connect } from 'react-redux';
 import { GetDetailProductAction } from "../../Redux/Actions/ManageProduct.Action"
 import swal from 'sweetalert';
 import StarRatings from 'react-star-ratings';
-
+import { formatMoney, formatPage, getParam } from '../../Commons/functionCommon';
+import { isEqual } from 'lodash';
+import { typeOf } from 'react-back-to-top-button';
+import { AddProductCartAction } from '../../Redux/Actions/cartAction';
 class DetailProduct extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            // maKhoaHoc: this.props.match.params.maKhoaHoc,
+            indexCurrent: 0,
+            urlImageCurrent: "",
+            optionProduct: {
+                _id: "",
+                rom: 1,
+                sale_off: {
+                    isSale_Off: false,
+                    percent: 0
+                },
+                price: 1,
+                images: [
+                    {
+                        Id_cloud: "",
+                        quantity: 1,
+                        _id: "",
+                        url: "",
+                        color: "",
+                        employee_Product: {
+                            _id: "",
+                            account: ""
+                        },
+                        dateCreated: ""
+                    }
+                ],
+                nameOption: "",
+                alias_Option: ""
+            }
 
         }
-    }
-    formatMoney = (price) => {
-        return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-    }
-    formatPage = () => {
-        window.scrollTo(0, 0);
     }
     renderRating = (rating) => {
         return (
@@ -27,143 +49,209 @@ class DetailProduct extends Component {
                 starRatedColor="Gold"
                 // changeRating={this.changeRating}
                 numberOfStars={5}
-                starDimension="19px"
+                starDimension="17px"
                 // starSpacing="15px"
                 name='rating'
             />
         )
     }
+
+
+    handleChange = (event) => {
+        let { name, value } = event.target;
+        this.props.history.push(`?dung-luong=${value}gb`)
+
+        if (value != this.state.optionProduct.rom) {
+            this.setState({
+                optionProduct: this.props.DetailProduct.options[
+                    this.findIndexOption(this.props.DetailProduct.options, value)],
+
+            });
+        }
+    }
+
+    renderOptions = (options) => {
+
+        return options?.map((ele, index) => {
+            return (
+                <div className="item-option" key={index}>
+
+                    <input type="radio"
+                        id={ele.rom} value={ele.rom}
+                        checked={ele._id === this.state.optionProduct._id}
+                        onChange={this.handleChange}
+                    />
+                    <label htmlFor={ele.rom}>
+                        {ele.rom}GB
+                            <p>{ele.sale_off.isSale_Off ?
+                            formatMoney(ele.price * (100 - ele.sale_off.percent) / 100) :
+                            formatMoney(ele.price)
+                        }
+                        </p>
+                    </label>
+
+
+
+                </div>
+            )
+        })
+    }
+
+
+    handleChangeSelectImage = (url) => {
+        this.setState({ urlImageCurrent: url });
+
+    }
+
+    renderImageOptions = (images) => {
+
+        return images?.map((ele, index) => {
+            return (
+                <div className="select-image-color">
+                    <div className={`image-option${ele.url == this.state.urlImageCurrent ? "-active" : ""}`} key={index}
+                        onClick={() => this.handleChangeSelectImage(ele.url)}
+                    >
+                        <img src={ele.url} alt="error" />
+                    </div>
+                    <div className="color-option">
+                        <p>{ele.color}</p>
+                    </div>
+                </div>
+            )
+
+        })
+
+    }
+
+    renderDetailPrice = (sale_off, price) => {
+
+        if (sale_off == undefined) return
+        if (sale_off.isSale_Off) {
+            return (
+                <p>
+                    {formatMoney(price * (100 - sale_off.percent) / 100)}
+                    <strong>₫</strong>
+                    <del> {formatMoney(price)} ₫</del>
+                    <label className='product-sale-off'>Giảm -{sale_off.percent}%</label>
+                    <label classname="product-pernumpro">
+                        Trả góp 0%
+                 </label>
+                </p>
+
+            )
+
+        }
+        else {
+            console.log(sale_off, price)
+            return (
+                <p>
+                    {formatMoney(price)}
+                    <strong>₫</strong>
+                    <label className="product-pernumpro">
+                        Trả góp 0%
+                 </label>
+                </p>
+
+            )
+        }
+
+    }
+
+    renderTitleNameProduct = (nameOption, _id) => {
+
+        return (
+            <div className="Header-Title-Name">
+                <h1 className='Header-detail-product-title' >{nameOption}</h1>
+                <span>(No.{_id.substr(-11)})</span>
+            </div>
+        )
+
+
+    }
+
     render() {
-        let { name, price, image, alias, origin, material, quantity, descripts, ram, rom, operator } = this.props.DetailProduct;
+
+        console.log(this.props.DetailProduct)
         let rating = 1 + (Math.random() * (5 - 1))
-        let string = rating.toString().substr(0, 4)
+        // let string = rating.toString().substr(0, 4)
+        let { name, options, nameOption, _id, price, images } = this.props.DetailProduct
+
+        // let { nameOption, _id, sale_off, price, images } = this.state.optionProduct
+        // let option;
+        // if (options != undefined) {
+        //     option = options[this.state.indexCurrent];
+        // }
         return (
             <div className='DetailProduct'>
-                {this.formatPage()}
+
                 <div className="DetailProduct-content container">
-                    <div className="row m-0">
-                        <div className='DetailProduct-left col-6'>
-                            <div className="text-title-header">
-                                <h5 className='text-title-alias'>Đường dẫn sản phẩm :
-                                 <p> {alias}</p></h5>
-                            </div>
 
-                            <div className='class-img'>
-                                <img src={settings.domain + '/' + image} alt="error" />
-                            </div>
-                            <div className='class-info-product-bottom p-4'>
-                                <p className='text-rating' style={{ color: "Gold" }}>
-                                    <span className='span-rating' style={{ lineHeight: "19px" }}>{string}</span> <span>{this.renderRating(rating)}</span> </p>
+                    <div className="Header-detail-product">
+                        {/* {this.renderTitleNameProduct(nameOption, _id)} */}
 
-                                <p className='text-ppp' ><span>Đã bán</span> : 51 - </p>
-                                <p className='text-ppp'><span>Đánh giá</span> : 312 </p>
+                        <div className="Header-Title-Name">
+                            <h1 className='Header-detail-product-title' >{nameOption}</h1>
+                            <span>(No.{!_id ? '0xxnx1' : _id.substr(-6)} )</span>
+                        </div>
+
+                        <div className="Header-rating">
+                            <div>{this.renderRating(rating)} </div>
+                            <span> 1 khách hàng đánh giá | 21 câu hỏi được trả lời</span>
+                        </div>
+                    </div>
+
+
+                    <div className="Main-detail-product row">
+                        <div className="col-5 Main-detail-product-left">
+                            <img src={
+                                images ? images[0]?.url : 'Null'
+                            }
+                                alt="error" />
+                                <p>{name}</p>
+                        </div>
+                        <div className="col-7 Main-detail-product-middle">
+                            <div className="product-price">
+                                {this.renderDetailPrice(false, price)}
+                            </div>
+                            <div className="text-shipping">
+                                <i className="fa fa-truck" aria-hidden="true"></i>
+                                <p className='text-shipping'>
+                                    GIAO HÀNG TRÊN 63 TỈNH THÀNH
+                             </p>
+                            </div>
+                            <div className="options-product">
+                                {this.renderOptions(options)}
+
+                            </div>
+                            <div className="options-image-product">
+
+                                {this.renderImageOptions(images)}
+
+                            </div>
+                            <div className="options-discount">
+                                <h4>Ưu đãi thêm</h4>
+                                <ul className='list-contentDiscount'>
+                                    <li><i class="fa fa-check"></i>  Giảm thêm 500.000đ cho Apple Watch/AirPods khi mua kèm iPhone</li>
+                                    <li><i class="fa fa-check"></i> Tặng PMH 600.000đ mua Combo: Củ sạc nhanh 20W + Tai nghe EarPods</li>
+                                    <li><i class="fa fa-check"></i>
+                                    Thu cũ đổi mới – Trợ giá ngay 15% <a href="#">Xem thêm chi tiết</a></li>
+                                </ul>
+
                             </div>
                         </div>
-                        <div className='DetailProduct-right col-6'>
-                            <h3 className='text-title-detailproduct'>Thông tin sản phẩm</h3>
 
-                            <ul className='DetailProduct-list-info'>
-                                <li className='DetailProduct-info-item'>
-                                    <p className='text-info-item'>Tên sản phẩm :  <span>{name}</span></p>
-                                </li>
-                                <li className='DetailProduct-info-item'>
-
-                                    {price != null &&
-                                        <p className='text-info-item'>Giá sản phẩm : <span>{this.formatMoney(price)} VNĐ</span> </p>
-                                    }
-                                </li>
-                                <li className='DetailProduct-info-item'>
-                                    <p className='text-info-item'> Số lượng còn :
-                                     <span> {quantity}</span>
-                                    </p>
-                                </li>
-                                <li className='DetailProduct-info-item'>
-                                    <p className='text-info-item'> Chất liệu :
-                                     <span> {material}</span>
-                                    </p>
-                                </li>
-                                <li className='DetailProduct-info-item'>
-                                    <p className='text-info-item'> Xuất xứ :
-                                      <span> {origin}</span>
-                                    </p>
-                                </li>
-                                <li className='DetailProduct-info-item'>
-                                    <p className='text-info-item'> Thông số cấu hình : </p>
-
-                                </li>
-                                <li className='DetailProduct-info-item'>
-                                    <p className='text-info-item'> Hỗ trợ công nghệ :
-                                     <span>5G , FaceID, Finger Scanner</span>
-                                    </p>
-                                </li>
-                                <li className='DetailProduct-info-item'>
-                                    <p className='text-info-item'> Chip xử lý :
-                                     <span>IOS 13</span>
-                                    </p>
-                                </li>
-                                <li className='DetailProduct-info-item'>
-                                    <p className='text-info-item'> Ram :
-                                     <span>{ram}</span>
-                                    </p>
-                                </li>
-                                <li className='DetailProduct-info-item'>
-                                    <p className='text-info-item'> Rom :
-                                     <span>{rom}</span>
-                                    </p>
-                                </li >
-
-                                <li className='DetailProduct-info-item'>
-                                    <p className='text-info-item'> Hệ điều hàng :
-                                     <span>{operator}</span>
-                                    </p>
-                                </li>
-
-                                <li className='DetailProduct-info-item'>
-                                    <p className='text-info-item'> kích thước :
-                                     <span>77 x 55 x 11 (mm) </span>
-                                    </p>
-                                </li>
-
-                                <li className='DetailProduct-info-item'>
-                                    <p className='text-info-item'> kích thước màn hình:
-                                     <span> 5.8 Inch </span>
-                                    </p>
-                                </li>
-                                <li className='DetailProduct-info-item'>
-                                    <p className='text-info-item'> Chất lượng màn hình:
-                                     <span> OLED </span>
-                                    </p>
-                                </li>
-                                <li className='DetailProduct-info-item'>
-                                    <p className='text-info-item'> Camera :  </p>
-                                    <p className='ml-5'> Trước : <span> 23 Mpx </span></p>
-                                    <p className='ml-5'> Sau : <span> 13 Mpx </span></p>
-                                </li>
-                            </ul>
-                        </div>
 
                     </div>
 
-                    <div className="row m-0 DetailProduct-middle">
+                    <div className="row m-0 DetailProduct-middle p-5">
                         <div className="col-6"></div>
                         <div className="col-6 group-buttons">
-                            <button className='btn btn-success' onClick={() => { this.props.themGioHang(this.props.DetailProduct) }}>Thêm giỏ hàng</button>
+                            <button className='btn btn-success mr-4'
+                                onClick={() => { this.props.AddProductCart(_id, false, true) }}>Thêm giỏ hàng</button>
                             <button className='btn btn-danger'>
                                 <i className="fa fa-phone mr-3" aria-hidden="true"></i>
-                                Hot line (+1900 1220)
-                                </button>
-                        </div>
-                    </div>
-                    <div className="row bg-class"></div>
-
-
-                    <div className="row introduction-product">
-                        <h3 className="p-5">Giới thiệu sản phẩm</h3>
-                        <div className="col-12 text-product">
-                            <p><span>{descripts}</span> Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fugit dignissimos minus laudantium tenetur, maiores obcaecati itaque totam eaque ex numquam dolor autem nulla facere? Magni veritatis fuga quam tempore amet. Voluptatum ex, sit sunt voluptatem nulla amet praesentium, assumenda laboriosam deserunt commodi corrupti aut.
-                                 Veniam delectus soluta tempora nam illum libero cupiditate tempore asperiores ipsa ratione dolorum id ullam molestias iure vel voluptatibus, deserunt repellat modi odit. Dolorum perferendis omnis magnam nulla est unde ipsam quidem hic deleniti aspernatur. Neque asperiores nesciunt molestiae eveniet, labore, libero repellat deserunt earum aliquid, illo dicta id inventore incidunt nam odio cumque saepe. Aspernatur.</p>
-                            <p>Lorem ipsum dolor sit amet, <span>consectetur adipisicing elit</span>. Eaque rerum est perferendis, ut cum blanditiis debitis quis vero facilis repellendus perspiciatis! Hic tempore eum, ipsum nemo dolores, sunt a facilis maxime fugiat totam veritatis, porro rerum veniam! Atque sapiente facere tempore ea rem doloribus, aliquid sit ut earum sed modi, consequuntur nulla odio magni veniam ipsa cupiditate in
-                            nihil reiciendis corporis? Repellat <span>totam reiciendis ea</span> repellendus est id illum, quis sint impedit magnam, eaque dolores quibusdam quisquam a officia autem?</p>
+            Hot line (+1900 1220)
+        </button>
                         </div>
                     </div>
 
@@ -173,11 +261,52 @@ class DetailProduct extends Component {
         )
     }
 
+
+    findIndexOption = (Option, capacity) => {
+
+
+        if (capacity !== undefined) {
+
+            return Option?.findIndex(ele => ele.rom === capacity)
+
+        }
+        return 0;
+
+    }
     componentDidMount() {
         //lấy giá trị tham số từ url this.props.match.params.tenThamSo
-        let { _id } = this.props.match.params;
+        formatPage();
+        // let { aliasBrand, aliasCategory, aliasSeries, aliasProduct } = this.props.match.params;
+        let { id } = this.props.match.params;
 
-        this.props.GetDetailProduct(_id);
+        this.props.GetDetailProduct(id);
+
+    }
+    componentDidUpdate(prevProps, prevState) {
+        console.log("didupdate")
+
+        // let { aliasBrand, aliasCategory, aliasSeries, aliasProduct } = this.props.match.params;
+        // if (!this.props.DetailProduct) {
+
+        //     this.props.GetDetailProduct(aliasBrand, aliasCategory, aliasSeries, aliasProduct);
+        //     // this.setState({
+        //     //     optionProduct: this.findOption(this.props.DetailProduct.options)
+        //     // })
+        // }
+        // if (!this.state.optionProduct._id) {
+        //     let capacity = getParam(this.props.location.search, "dung-luong")
+        //     capacity = capacity.slice(0, capacity.indexOf("gb"));
+        //     this.setState({
+        //         optionProduct: this.props.DetailProduct.options[
+        //             this.findIndexOption(this.props.DetailProduct.options, capacity)],
+
+        //     })
+        // }
+        // if (!this.state.urlImageCurrent || !isEqual(this.state.optionProduct, prevState.optionProduct)) {
+        //     this.setState({
+        //         urlImageCurrent: this.props.DetailProduct.options[0].images[0].url,
+        //     })
+        // }
 
     }
 }
@@ -191,8 +320,14 @@ const mapStateToProp = state => {
 const mapDispatchToProps = (dispatch) => {
     return {
 
+        // GetDetailProduct: (aliasBrand, aliasCategory, aliasSeries, aliasProduct) => {
+        //     dispatch(GetDetailProductAction(aliasBrand, aliasCategory, aliasSeries, aliasProduct))
+        // },
         GetDetailProduct: (id) => {
             dispatch(GetDetailProductAction(id))
+        },
+        AddProductCart: (productClicked, isDeCrease, isAdd) => {
+            dispatch(AddProductCartAction(productClicked, isDeCrease, isAdd))
         },
         themGioHang: (sanPhamClick) => {
 

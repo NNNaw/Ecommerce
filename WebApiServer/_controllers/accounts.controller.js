@@ -1,15 +1,19 @@
+const bcrypt = require('bcryptjs')
+// const jwt = require('jsonwebtoken');
+const cloudinary = require('../cloudinary');
+const { CreateToken } = require('./../_routes/verifyToken')
+
 const Account = require('../_models/accounts.model')
 const Customer = require('../_models/customer.model')
 const Employee = require('../_models/employee.model')
 const Management = require('../_models/management.model')
+const AccountType = require('./../_models/accountTypes.model')
+
+const { getInfoAccountTypeByName } = require('./accountTypes.controller')
 
 const { registerValidation, loginValidation } = require('./../validation')
-// const checkRole = require('./../_common/handleUploadFile')
-// const idType = require('./../_common/variable.common')
 //import handle tokens
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken');
-
+const { urlImage, Roles } = require('./../_common/variable.common');
 
 
 module.exports.Login = async function (req, res) {
@@ -28,176 +32,138 @@ module.exports.Login = async function (req, res) {
   if (!validatePassword) return res.status(400).send("Mật khẩu không đúng!")
 
 
+  try {
+    let userExist;
+    let UserAccount;
+    switch (accountExist.AccountType.name_AccountType) {
 
-  //Create Token
-  const token = jwt.sign({ _id: accountExist._id }, process.env.TOKEN_SECRET);
+      case Roles.Management: // admin
+        {
 
+          userExist = await Management.findOne({ account: accountExist.account });
+          const { _id, account, fullName, displayName, image, address, phoneNumber, identitycard, gender, birthday } = userExist;
 
-
-  switch (accountExist.Id_AccountType) {
-
-    case "5f897dfc7a0f1b7a330a6b39": // admin
-      {
-
-        var userExist = await Management.findOne({ account: accountExist.account });
-        const { account, fullName, address, phoneNumber, identitycard, gender, birthday } = userExist;
-
-        var UserAccount = { // detail account + user = token
-          account: account,
-          Id_AccountType: accountExist.Id_AccountType,
-          address: address,
-
-          phoneNumber: phoneNumber,
-          identityCard: identitycard,
-          fullName: fullName,
-          gender: gender,
-          birthday: birthday,
-          token: token,
+          UserAccount = { // detail account + user = token
+            _id: _id,
+            account: account,
+            AccountType: accountExist.AccountType,
+            address: address,
+            displayName: displayName,
+            phoneNumber: phoneNumber,
+            identityCard: identitycard,
+            fullName: fullName,
+            gender: gender,
+            birthday: birthday,
+            image: image,
+            token: CreateToken(_id),
+          }
+          break;
         }
+      case Roles.Employee: // nhân viên
+        {
+
+          userExist = await Employee.findOne({ account: accountExist.account });
+          const { _id, account, fullName, displayName, image, address, phoneNumber, identitycard, gender, birthday, managementCreated } = userExist;
+
+          UserAccount = { // detail account + user = token
+            _id: _id,
+            account: account,
+            AccountType: accountExist.AccountType,
+            address: address,
+            phoneNumber: phoneNumber,
+            displayName: displayName,
+            identityCard: identitycard,
+            fullName: fullName,
+            gender: gender,
+            image: image,
+            birthday: birthday,
+            managementCreated: managementCreated,
+            token: CreateToken(_id),
+          }
+          break;
+        }
+      case Roles.Customer: // khách hàng
+        {
+          userExist = await Customer.findOne({ account: accountExist.account });
+
+         
+          const { _id, account, image, displayName } = userExist;
+
+          UserAccount = { // detail account + user = token
+            _id: _id,
+            account: account,
+           
+            AccountType: accountExist.AccountType,
+
+            image: image,
+            displayName: displayName,
+            token: CreateToken(_id),
+
+            // phoneNumber: phoneNumber,
+            // identityCard: identitycard,
+            // fullName: fullName,
+            // gender: gender,
+            // birthday: birthday,
+            // address: address,
+
+          }
+          console.log(UserAccount)
+          break;
+        }
+      default:
+        res.status(404).send("Không tìm thấy role trong hệ thống ...")
         break;
-      }
-    case "5f897dfc7a0f1b7a330a6b3a": // nhân viên
-      {
 
-        var userExist = await Employee.findOne({ account: accountExist.account });
-        const { account, fullName, address, phoneNumber, identitycard, gender, birthday, accountCreated } = userExist;
-
-        var UserAccount = { // detail account + user = token
-          account: account,
-          Id_AccountType: accountExist.Id_AccountType,
-          address: address,
-          phoneNumber: phoneNumber,
-          identityCard: identitycard,
-          fullName: fullName,
-          gender: gender,
-          birthday: birthday,
-          accountCreated: accountCreated,
-          token: token,
-        }
-        break
-      }
-    default:
-
-
-      var userExist = await Customer.findOne({ account: accountExist.account });
-
-
-
-
-      const { account, fullName, address, phoneNumber, identitycard, gender, birthday, image, displayName } = userExist;
-
-      var UserAccount = { // detail account + user = token
-        account: account,
-        Id_AccountType: accountExist.Id_AccountType,
-        address: address,
-        image: image,
-        displayName: displayName,
-        phoneNumber: phoneNumber,
-        identityCard: identitycard,
-        fullName: fullName,
-        gender: gender,
-        birthday: birthday,
-        token: token,
-      }
-      break;
-
+    }
+    //sign to UserAccount
+    res.header('auth-token', UserAccount.token).send(UserAccount);
+  } catch (error) {
+    res.status(404).send(error)
   }
+}
 
-  //sign to UserAccount
+const addNewAccount = async function (account, password, AccountType) {
 
-  res.header('auth-token', token).send(UserAccount);
+  try {
+
+    //hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashPassword = await bcrypt.hash(password, salt);
+
+    const newAccount = new Account({
+      account: account,
+      password: hashPassword,
+      AccountType: AccountType
+    });
+    Account.create(newAccount)
+  } catch (error) {
+    res.status(404).json({ message: error })
+  }
 }
 
 
-module.exports.Register = async function (req, res) {
+module.exports.RegisterCustomer = async function (req, res) {
 
-  console.log(req.body)
-  const { error } = registerValidation(req.body);
-
-
-  if (error) return res.status(400).send(error.details[0].message);
-
-
-  // check account already exist
-  const accountExist = await Account.findOne({ account: req.body.account });
-  if (accountExist) return res.status(400).send("Account already exists.");
-
-
-  //hash password
-  const salt = await bcrypt.genSalt(10);
-  const hashPassword = await bcrypt.hash(req.body.password, salt);
-
-
-  const account = new Account({
-    account: req.body.account,
-    password: hashPassword,
-    dateCreated: req.body.dateCreated,
-    Id_AccountType: req.body.Id_AccountType
-  });
-
-
-  var user = new Object();
-
-
-  switch (req.body.Id_AccountType) {
-    case "5f897dfc7a0f1b7a330a6b39": // admin
-      {
-        user = new Management({
-          account: req.body.account,
-          fullName: "",
-          address: "",
-          phoneNumber: "",
-          identitycard: "",
-          gender: "",
-          birthday: "",
-        });
-
-        break;
-      }
-    case "5f897dfc7a0f1b7a330a6b3a": // nhân viên
-      {
-        user = new Employee({
-          account: req.body.account,
-          accountCreated: req.body.accountCreated,
-          fullName: "",
-          address: "",
-          phoneNumber: "",
-          identitycard: "",
-          gender: "",
-          birthday: "",
-
-        });
-        break
-      }
-    default:
-      user = new Customer({
-        account: req.body.account,
-        fullName: "No Name",
-        displayName: req.body.displayName,
-        image: "uploads/avatarDefault.png",
-        address: "No address",
-        phoneNumber: 1711061117,
-        identitycard: 1711061117,
-        gender: "Nam",
-        birthDay: Date.now()
-      });
-      break;
-
-  }
+  addNewAccount(req.body.account, req.body.password, req.accountType);
 
   try {
-    // stupid code
-    // save account to db
-    // const saveAccount = await account.save();
-    // res.json(saveAccount);
-    // save user to db
-    //  const saveUser = await user.save();
+    const newCustomer = new Customer({
+      account: req.body.account,
+      fullName: "No Name",
+      displayName: req.body.displayName,
+      image: req.body.gender !== "Nam" ? urlImage.avartaFemale : urlImage.avartaMale,
+      address: "No address",
+      phoneNumber: 1711061117,
+      identitycard: 1711061117,
+      gender: req.body.gender,
+      birthDay: Date.now()
+    });
 
-    console.log(user)
 
-    const xyz = await Promise.all([account.save(), user.save()]);
+    Customer.create(newCustomer).then(function (customer) {
+      res.status(200).json(customer);
+    });
 
-    res.status(200).json(xyz);
 
     // stack overflow
     //    res.status(400).json({
@@ -215,44 +181,41 @@ module.exports.Register = async function (req, res) {
   } catch (err) {
     res.json({ message: err })
   }
+
 }
 
-module.exports.GetCustomer = async function (req, res) {  
-  let accountId = req.params.id; // user name
-  console.log("GetCustomer" , req.params.id)
+module.exports.RegisterEmployee = async function (req, res) {
 
-  var account = await Account.findOne({ account: accountId });
-  var customer = await Customer.findOne({ account: accountId });
+  addNewAccount(req.body.account, req.body.password, req.accountType);
 
-  let infoAccount = { // detail info aaccount
-  
+  try {
+    const newEmployee = new Employee({
+      account: req.body.account,
+      fullName: "No Name",
+      displayName: req.body.displayName,
+      image: req.body.gender !== "Nam" ? urlImage.avartaFemale : urlImage.avartaMale,
+      address: "No address",
+      phoneNumber: 1711061117,
+      identitycard: 1711061117,
+      gender: req.body.gender,
+      birthDay: Date.now(),
+      managementCreated: req.managementCreated
+    });
 
-    account: account.account,
 
-    dateCreated: account.dateCreated,
-    Id_AccountType: account.Id_AccountType,
+    Employee.create(newEmployee).then(function (employee) {
+      res.status(200).json(employee);
+    });
 
-
-    displayName: customer.displayName,
-    fullName: customer.fullName,
-    image: customer.image,
-    address: customer.address,
-    phoneNumber: customer.phoneNumber,
-    identitycard: customer.identitycard,
-    gender: customer.gender,
-    birthDay: customer.birthDay
-    
+  } catch (err) {
+    res.json({ message: err })
   }
 
-  res.json(infoAccount);
-
 }
-
 
 
 
 module.exports.UpdateCustomer = async function (req, res) {
-
 
   try {
 
@@ -276,15 +239,12 @@ module.exports.UpdateCustomer = async function (req, res) {
   }
 }
 
-
 module.exports.ChangePassword = async function (req, res) {
   try {
 
     console.log(req.body)
     const accountExist = await Account.findOne({ account: req.params.id });
     if (!accountExist) return res.status(400).send("Tài khoản hoặc mật khẩu không đúng!");
-
-
 
 
 
@@ -309,7 +269,7 @@ module.exports.ChangePassword = async function (req, res) {
 
 
   } catch (error) {
-    res.json({ message: err })
+    res.json({ message: error })
   }
 
 
@@ -320,25 +280,37 @@ module.exports.ChangePassword = async function (req, res) {
 module.exports.updateImage = async function (req, res) {
 
   try {
-   
-    var type = checkRole(req.Id_AccountType)
-    console.log(type)
+
+
+
     let updateImage;
-    const account = req.params.id
+    const account = req.params.id;
+
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "User",
+      resourse_type: "auto"
+    });
+
     switch (type) {
-      case 1: // admin
+      case Roles.Management: // admin
 
         break;
-      case 2: // employee
+      case Roles.Employee: // employee
 
         break;
-      case 3: // customer
+      case Roles.Customer: // customer
+
+        let customer = await Customer.findOne(account = req.params.id);
+        // Delete image from cloudinary
+        await cloudinary.uploader.destroy(customer.cloudinary_id);
+
         updateImage = await Customer.updateOne(
           { account: account },
           {
             $set:
             {
-              image: `uploads/${req.file.filename}`
+              image: result.secure_url,
+              cloudinary_id: result.public_id,
             }
           });
 
@@ -352,29 +324,9 @@ module.exports.updateImage = async function (req, res) {
 
   } catch (error) {
 
-    res.json({ message: err })
+    res.json({ message: error })
 
   }
 }
 
 
-function checkRole(id) {
-  let idTypeCutomer = "5f897dfc7a0f1b7a330a6b3b",
-    idTypeEmplopyee = "5f897dfc7a0f1b7a330a6b3a",
-    idTypeManagement = "5f897dfc7a0f1b7a330a6b39"; // also var, const
-
-  switch (id) {
-    case idTypeManagement:
-      return 1;
-    // break;
-    case idTypeEmplopyee:
-      return 2;
-    // break;
-    case idTypeCutomer:
-      return 3;
-    // break;
-    default:
-      return 3;
-    // break;
-  }
-};

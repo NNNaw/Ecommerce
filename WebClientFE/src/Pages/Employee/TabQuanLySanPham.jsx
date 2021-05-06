@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { isEqual } from 'lodash'
 import { settings } from '../../Commons/Settings';
 import { CreateProductAction, DeleteProductAction, GetAllBrandAction, GetAllCategoryAction, GetAllProductAction, UpdateImageProductAction, UpdateProductAction } from '../../Redux/Actions/ManageProduct.Action';
-
+import { formatMoney } from './../../Commons/functionCommon';
 
 
 class TabQuanLySanPham extends Component {
@@ -71,9 +71,6 @@ class TabQuanLySanPham extends Component {
         })
     }
 
-    formatMoneyVND = (price) => {
-        return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + ' VNĐ';
-    }
     inform = (data) => {
 
         this.setState({
@@ -96,32 +93,33 @@ class TabQuanLySanPham extends Component {
                 ram: "",
                 rom: "",
 
-                // nameCategory: "",
-                // nameBrand: "",
-                accountCreatedProduct: "",
+                nameCategory: this.props.Categories[0].nameCategory,
+                nameBrand: this.props.Brands[0].nameBrand,
 
-                Id_Category: "",
-                Id_Brand: "",
-                Id_Employee: "",
+
+                Id_Category: this.props.Categories[0]._id,
+                Id_Brand: this.props.Brands[0]._id,
+
             }
             , fileSelected: null
 
         })
     }
+
     renderListProduct = () => {
 
         return this.props.ListProducts.map((ele, index) => {
             return (
                 <tr className='items-line' key={index}>
                     <td>{index}</td>
-                    <td>{ele.nameBrand}</td>
-                    <td>{ele.nameCategory}</td>
+                    <td>{ele.brand_Product.nameBrand}</td>
+                    <td>{ele.category_Product.nameCategory}</td>
                     <td>{ele.name}</td>
                     <td>
-                        <img src={settings.domain + '/' + ele.image} alt="error" />
+                        <img src={ele.images[0].url} alt="error" />
                     </td>
-                    <td>{this.formatMoneyVND(ele.price)}</td>
-                    <td>{ele.accountCreatedProduct}</td>
+                    <td>{formatMoney(ele.price)}</td>
+                    <td>{ele.employee_Product.account}</td>
                     <td>
                         <button className='btn btn-warning mr-2' type="button"
                             data-toggle="modal" data-target="#exampleModalCenter"
@@ -143,9 +141,6 @@ class TabQuanLySanPham extends Component {
 
         });
     }
-    // componentWillMount(){
-    //     this.props.
-    // }
 
     handleChange = (event) => {
         let { value, name } = event.target;
@@ -155,6 +150,7 @@ class TabQuanLySanPham extends Component {
             console.log(this.state.product)
         })
     }
+
     validate = () => {
         return
     }
@@ -176,17 +172,18 @@ class TabQuanLySanPham extends Component {
         return array.map((ele, index) => {
 
             return (
-                <option key={index} value={ele._id}>
+                <option key={index} value={ele._id} >
                     {ele.nameBrand}
                 </option>
             )
         })
     }
+
     renderSelectCategory = (array) => {
         return array.map((ele, index) => {
 
             return (
-                <option key={index} value={ele._id}>
+                <option key={index} value={ele._id} >
                     {ele.nameCategory}
                 </option>
             )
@@ -200,6 +197,7 @@ class TabQuanLySanPham extends Component {
             </div>
         )
     }
+
     renderModalBody = () => {
         let { name, price, image, Id_Category, Id_Brand,
             ram, rom, quantity } = this.state.product
@@ -272,7 +270,7 @@ class TabQuanLySanPham extends Component {
 
                         <div className="input-group form-group">
                             <label htmlFor="price">Số lượng : </label>
-                            <input type="quantity" className="form-control"  min ='1'
+                            <input type="quantity" className="form-control" min='1'
                                 // autoComplete="password"
                                 id="quantity" name='quantity' value={quantity}
                                 onChange={this.handleChange}
@@ -281,7 +279,7 @@ class TabQuanLySanPham extends Component {
 
                         <div className="input-group form-group">
                             <label htmlFor="ram">Ram : </label>
-                            <input type="number" className="form-control"  min='1'
+                            <input type="number" className="form-control" min='1'
                                 // autoComplete="password"
                                 id="ram" name='ram' value={ram}
                                 onChange={this.handleChange}
@@ -290,7 +288,7 @@ class TabQuanLySanPham extends Component {
 
                         <div className="input-group form-group">
                             <label htmlFor="rom">Rom : </label>
-                            <input type="text" className="form-control"  min='1'
+                            <input type="text" className="form-control" min='1'
                                 // autoComplete="password"
                                 id="rom" name='rom' value={rom}
                                 onChange={this.handleChange}
@@ -323,7 +321,7 @@ class TabQuanLySanPham extends Component {
 
                     <div className="row TabQuanLyNguoiDung_Top">
                         <div className="col-6 py-5">
-                            <button onClick={() => this.setState({ product: this.state.product_empty, isAdd: true })} className='btn btn-primary ml-4' type="button"
+                            <button onClick={() => this.setState({ isAdd: true })} className='btn btn-primary ml-4' type="button"
                                 data-toggle="modal" data-target="#exampleModalCenter">
                                 <i className="fas fa-plus"></i>
                                  Thêm sản phẩm</button>
@@ -426,19 +424,42 @@ class TabQuanLySanPham extends Component {
         this.props.GetAllBrand();
         this.props.GetAllCategory();
     }
-    componentDidUpdate(prevProps) {
 
-
+    componentDidUpdate(prevProps, prevState) {
         if (!isEqual(prevProps.Brands, this.props.Brands)) {
-
+            // console.log("prevProps ", prevProps.Brands) WHYYYYYY
+            // console.log("this.props ", this.props.Brands)
             this.setState({
-                product_empty: { ...this.state.product_empty, Id_Brand: this.props.Brands[0]._id, nameBrand: this.props.Brands[0].nameBrand }
+                // product_empty: { ...this.state.product_empty, Id_Brand: this.props.Brands[0]._id, nameBrand: this.props.Brands[0].nameBrand },
+                product: { ...this.state.product, Id_Brand: this.props.Brands[0]._id, nameBrand: this.props.Brands[0].nameBrand },
             })
         }
         if (!isEqual(prevProps.Categories, this.props.Categories)) {
             this.setState({
-                product_empty: { ...this.state.product_empty, Id_Category: this.props.Categories[0]._id, nameCategory: this.props.Categories[0].nameCategory }
+                product: { ...this.state.product, Id_Category: this.props.Categories[0]._id, nameCategory: this.props.Categories[0].nameCategory },
+                // product_empty: { ...this.state.product_empty, Id_Category: this.props.Categories[0]._id, nameCategory: this.props.Categories[0].nameCategory }
             })
+        }
+        // find name brand
+        if (!isEqual(prevState.product.Id_Brand, this.state.product.Id_Brand)) {
+
+            let brand = this.props.Brands.find(x => x._id === this.state.product.Id_Brand)
+            this.setState({
+                product: {
+                    ...this.state.product, nameBrand: brand.nameBrand
+                }
+            });
+        }
+        // find name category
+        if (!isEqual(prevState.product.Id_Category, this.state.product.Id_Category)) {
+
+            let cate = this.props.Categories.find(x => x._id === this.state.product.Id_Category)
+
+            this.setState({
+                product: {
+                    ...this.state.product, nameCategory: cate.nameCategory
+                }
+            });
         }
     }
 }

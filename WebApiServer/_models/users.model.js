@@ -1,50 +1,63 @@
 // const { string } = require('@hapi/joi');
 
+
 const mongoose = require('mongoose');
-
-
 var userSchema = new mongoose.Schema({
-    
-    fullName : {
+
+    fullName: {
         type: String,
-        required : false,
-        default : "",
+        required: false,
+        default: "",
     },
-    address :  {
+    address: {
         type: String,
-        required : false,
-        default : "",
+        required: false,
+        default: "",
     },
-    phoneNumber :  {
+    phoneNumber: {
         type: Number,
-        required : false,
-        min : 10,
-        default : "",
+        require: true,
+        min: 10,
+        default: 1711061117,
     },
-    identitycard :  {
+    identitycard: {
         type: Number,
-        required : false,
-        min : 8,
-        default : "",
+        require: true,
+        min: 8,
+        default: 1711061117,
     },
-    gender:{
+    gender: {
         type: String,
-        default : "Nam",
-        min : 6,
-        max : 10
+        default: "Nam",
+        min: 6,
+        max: 10
     },
-    birthDay:{
-        type:Date,
-        default: "01/01/1999"
+    birthDay: {
+        type: Date,
+        default: Date.now
     },
-    account:   {
+    account: {
         type: String,
-        required : true,
-        min : 6,
-        max : 255
+        required: true,
+        min: 6,
+        max: 255
+    },
+    image: {
+        type: String,
+        required: false
+    },
+    cloudinary_id: {
+        type: String,
+        default: "Image Default"
+    },
+    displayName: {
+        type: String,
+        required: false,
+        default: "No Name"
     }
-  });
 
-  var User = mongoose.model('User',userSchema,'Users');
+});
 
-  module.exports = User;
+var User = mongoose.model('User', userSchema, 'Users');
+
+module.exports = User;

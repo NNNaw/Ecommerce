@@ -14,6 +14,6 @@ var shippingMethodSchema = new mongoose.Schema({
 
 });
 
-var ShippingMethod = mongoose.model('ShippingMethod', shippingMethodSchema, 'ShippingMethods');
+var ShippingMethod = mongoose.model('ShippingMethod', shippingMethodSchema, 'ShippingMethod');
 
 module.exports = ShippingMethod;

@@ -8,8 +8,6 @@ module.exports.GetAllMethodShipping = async function (req, res) {
 
     res.json(shippingMethods);
 
-
-
 }
 
 

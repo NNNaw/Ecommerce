@@ -7,7 +7,10 @@ import { NavLink } from 'react-router-dom';
 import Logo from "./../../Assets/Images/LogoAmazon.png"
 import Cart from '../Cart/Cart';
 import { isEqual } from 'lodash';
-import { GetDetailUserAction } from '../../Redux/Actions/ManageUsers.Action';
+import { onLoadUserAction } from '../../Redux/Actions/ManageUsers.Action';
+import { UrlInfoUser } from '../../Commons/functionCommon';
+import { loadCartAction } from '../../Redux/Actions/cartAction';
+import NavHeader from './NavHeader';
 
 
 class Header extends Component {
@@ -19,16 +22,8 @@ class Header extends Component {
 
             infoUser: {
                 image: "",
-                displayName: "",
+                displayName: "x",
                 account: "",
-                //     account: JSON.parse(localStorage.getItem('infoUser')).account === null ? ""
-                //     : JSON.parse(localStorage.getItem('infoUser')).account,
-                // account: JSON.parse(localStorage.getItem('infoUser')).account === null ? ""
-                //     : JSON.parse(localStorage.getItem('infoUser')).account,
-                // image: "" ,
-                // displayName: "nameeeee",
-                // account: "customer3",
-
             },
             keySearch: "",
 
@@ -53,7 +48,7 @@ class Header extends Component {
     }
     renderButton = () => {
 
-        if (this.props.user === null) { // true
+        if (this.props.DetailUser === null) { // true
             return (
                 <div className='btn-group_Sign'>
                     <NavLink className='btn btn_Sign' to='/dangnhap'>Đăng nhập</NavLink>
@@ -64,30 +59,31 @@ class Header extends Component {
         } else { // false
             return (
                 <div className="dropdown">
-                    <NavLink className='personal-div' to={`/QuanLyTaiKhoan/${this.props.user.account}`}>
-                        <p className="text-hello">Xin chào, {this.state.infoUser.displayName !== "" ?
+                    <NavLink className='personal-div' to={`/QuanLyTaiKhoan/${this.props.DetailUser.account}`}>
+                        <p className="text-hello">Xin chào,
+                        {/* {
+                        this.state.infoUser.displayName !== "" ?
                             <span>{this.state.infoUser.displayName}</span> :
                             <span>{this.props.DetailUser.displayName}</span>
-                        }
-
+                        } */}
+                            {this.props.DetailUser.displayName}
                         </p>
-                        <img className="btn-secondary dropdown-toggle" type="button"
-                            src={this.state.infoUser.image !== "" ?
-                                settings.domain + '/' + this.state.infoUser.image :
+                        <img className=" btn-secondary dropdown-toggle" type="button"
+                            // src={this.state.infoUser.image !== "" ?
+                            //     this.state.infoUser.image :
+                            //     this.props.user.image
+                            // }
+                            src={this.props.DetailUser.image}
 
-                                settings.domain + '/' + this.props.DetailUser.image
-                            }
 
-                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false" alt="Error" />
 
+                            id="dropdownMenuButton" data-toggle="dropdown" alt="Error" />
                     </NavLink>
-
-
-
                     <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <NavLink to={`/QuanLyTaiKhoan/${this.props.user.account}`} className="dropdown-item" >Quản lý tài khoản</NavLink>
-                        <NavLink to={`/QuanLyDonHang/${this.props.user.account}`} className="dropdown-item" >Quản lý đơn hàng</NavLink>
+
+                        <NavLink to={`/QuanLyTaiKhoan/user?id=${this.props.DetailUser._id}`} className="dropdown-item">
+                            Quản lý tài khoản</NavLink>
+                        <NavLink to={`/QuanLyDonHang/${this.props.DetailUser._id}`} className="dropdown-item" >Quản lý đơn hàng</NavLink>
 
                         <div className="dropdown-divider"></div>
 
@@ -107,10 +103,8 @@ class Header extends Component {
     }
     LogOut = () => {
         localStorage.clear();
-
-        document.getElementById("btn-logout").click();
-
-        this.props.GetInfoUser();
+        document.getElementById("btn-logout").click(); // move to home page
+        this.props.LogoutAction();
     }
 
     handleKeyUp = (event) => { // enter to search
@@ -124,6 +118,7 @@ class Header extends Component {
     render() {
         return (
             <div className="header container-fluid">
+
                 <div className="header-left">
                     <img src={Logo} alt="Error" />
                     <ul className="header-list-item">
@@ -145,8 +140,11 @@ class Header extends Component {
                         <form className="form-inline my-2 my-lg-0">
                             <input className="form-control input-search" type="search" placeholder="Tìm sản phẩm" aria-label="Search" id="keySearch"
                                 name="keySearch" value={this.state.keySearch} onChange={this.handleChange} onKeyDown={this.handleKeyUp} />
-                            <NavLink id='nav-search' to={`/DanhSachSanPhamTimKiem/${this.state.keySearch === "" ? "getAll" : this.state.keySearch}`} className="btn btn-search my-2 my-sm-0">
+                            <NavLink id='nav-search' to={`/tim-kiem/    ${this.state.keySearch === ""
+
+                             ? "getAll" : this.state.keySearch}`} className="btn btn-search my-2 my-sm-0">
                                 <i className="fa fa-search" aria-hidden="true"></i>
+
                             </NavLink>
                         </form>
                     </div>
@@ -161,43 +159,43 @@ class Header extends Component {
                     </div>
 
 
+
                 </nav>
 
+
+              
             </div >
         );
     }
 
 
     componentDidMount() {
-
-
-        if (localStorage.getItem('infoUser')) {
-            
-            this.props.GetInfoUser();
-            let account = JSON.parse(localStorage.getItem('infoUser')).account
-            this.props.GetDetailUser(account)
-
+        if (this.props.DetailUser === null) {
+            console.log("header")
+            let token = localStorage.getItem(settings.token);
+            this.props.onLoadUser(token);
         }
 
         if (localStorage.getItem('UserCart')) {
-            let cart = JSON.parse(localStorage.getItem('UserCart'))
-            this.props.loadCart(cart);
+            this.props.loadCart();
         }
     }
 
     componentDidUpdate(prevProps) {
 
-        if (!isEqual(prevProps.DetailUser, this.props.DetailUser)) {
-
-            console.log("DidUpdate")
-            this.setState({
-                infoUser: {
-                    image: this.props.DetailUser.image,
-                    account: this.props.DetailUser.account,
-                    displayName: this.props.DetailUser.displayName
-                }
-            });
-        }
+        // if (!isEqual(prevProps.DetailUser, this.props.DetailUser)) {
+        //     this.setState({
+        //         infoUser: {
+        //             image: this.props.DetailUser.image,
+        //             account: this.props.DetailUser.account,
+        //             displayName: this.props.DetailUser.displayName
+        //         }
+        //     });
+        // }
+        // if (!isEqual(prevProps.DetailUser, this.props.DetailUser)) {
+        //     // let _id = JSON.parse(localStorage.getItem('infoUser'))._id
+        //     this.props.onLoadUser();
+        // }
     }
 
 
@@ -205,7 +203,7 @@ class Header extends Component {
 const mapStateToProps = (state) => {
     return {
         ListProductsCart: state.ManageCartReducer.cart,
-        isLogOut: state.ManageUserReducer.isLogOut,
+        // isLogOut: state.ManageUserReducer.isLogOut,
         DetailUser: state.ManageUserReducer.DetailUser,
         user: state.ManageUserReducer.user,
     };
@@ -213,26 +211,17 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        loadCart: (cart) => {
-            let action = {
-                type: 'Load_Cart',
-                cart
-            }
-            dispatch(action)
+        loadCart: () => {
+            dispatch(loadCartAction())
         },
 
-        LogOut: () => {
+        LogoutAction: () => {
             dispatch({
-                type: "LOGOUT"
+                type: "LOG_OUT"
             });
         },
-        GetInfoUser: () => {
-            dispatch({
-                type: "GETINFOUSER"
-            });
-        },
-        GetDetailUser: (id) => {
-            dispatch(GetDetailUserAction(id))
+        onLoadUser: (token) => {
+            dispatch(onLoadUserAction(token));
         }
     }
 }

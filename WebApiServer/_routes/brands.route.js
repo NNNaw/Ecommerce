@@ -1,7 +1,10 @@
-var express = require('express')
+var express = require('express');
+const { checkContentFileUploads } = require('../multer');
+const { Roles } = require('../_common/variable.common');
 var router = express.Router()
 
-var controller = require('../_controllers/brands.controller');
+const controller = require('../_controllers/brands.controller');
+const { verifyToken } = require('./verifyToken');
 // const verify = require('./verifyToken')
 
 
@@ -10,7 +13,9 @@ var controller = require('../_controllers/brands.controller');
 router.get('/', controller.GetAllBrand);
 
 //get by id
- router.get('/:id', controller.GetAllBrandByID);
+router.get('/:id', controller.GetAllBrandByID);
+
+router.post("/", verifyToken(Roles.Management), checkContentFileUploads, controller.createBrand);
 
 // router.post('/',controller.addProduct);
 // router.delete('/:id',controller.deleteProduct);

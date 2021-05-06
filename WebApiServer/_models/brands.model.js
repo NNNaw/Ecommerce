@@ -2,30 +2,40 @@ const mongoose = require('mongoose');
 
 
 var brandSchema = new mongoose.Schema({
-    nameBrand : {
+    nameBrand: {
         type: String,
-        required : true,
+        required: true,
     },
-    aliasBrand : {
+    aliasBrand: {
         type: String,
-        required : true,
+        required: true,
     },
-    dateCreated : {
+    dateCreated: {
         type: Date,
-        
-        default : Date.now,
+
+        default: Date.now,
     },
-    image : {
+    image: {
         type: String,
-        required : false,
+        required: false,
         default: ''
     },
-    Id_Management : {
+    cloudinary_id: {
         type: String,
-        required : true,
     },
-  });
+    managementCreated: {
+        _id: {
+            type: String,
+            required: true,
+        },
+        account: {
+            type: String,
+            required: true,
+        }
 
-  var Brand = mongoose.model('Brand',brandSchema,'Brands');
+    },
+});
 
-  module.exports = Brand;
+var Brand = mongoose.model('Brand', brandSchema, 'Brands');
+
+module.exports = Brand;

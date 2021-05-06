@@ -19,7 +19,7 @@ export const GetAllProductAction = () => {
             });
 
         }).catch(error => {
-            console.log(error.response)
+            console.log(error.response.data)
 
         })
     }
@@ -27,41 +27,48 @@ export const GetAllProductAction = () => {
 
 export const layDanhSachSanPhamPhanTrangAction = (offset, perPage, set) => {
     return dispatch => {
-      axios({
-        url: settings.domain + "/products",
-        method: 'get'
-      }).then(result => {
-        //Đưa mangDanhMucKhoaHoc => Reducer
-        const data = result.data;
-      
-        const dataSliced = data.slice(offset, offset + perPage)
-        console.log(dataSliced) 
-        dispatch({
-          type: actionTypes.LAY_DANH_SACH_SAN_PHAM_PHAN_TRANG,
-          mangSanPhamPhanTrang: dataSliced
-        });
-  
-        const count = Math.ceil(data.length / perPage)
-        set(count)
-      }).catch(error => {
-        console.log(error.response);
-      })
+        axios({
+            url: settings.domain + "/products",
+            method: 'get'
+        }).then(result => {
+            //Đưa mangDanhMucKhoaHoc => Reducer
+            const data = result.data;
+
+            const dataSliced = data.slice(offset, offset + perPage)
+            console.log(dataSliced)
+            dispatch({
+                type: actionTypes.LAY_DANH_SACH_SAN_PHAM_PHAN_TRANG,
+                mangSanPhamPhanTrang: dataSliced
+            });
+
+            const count = Math.ceil(data.length / perPage)
+            set(count)
+        }).catch(error => {
+            console.log(error.response.data);
+        })
     }
-  }
+}
 
 export const GetDetailProductAction = (id) => {
 
     return dispatch => {
         axios({
+            // url: settings.domain + `/products/${aliasBrand}/${aliasCategory}/${aliasSeries}/${aliasProduct}`,
             url: settings.domain + `/products/${id}`,
+
             method: 'GET',
 
         }).then(result => {
 
-            console.log(result.data)
+            let data = result.data;
+            data.options.sort(function (a, b) { return a.rom - b.rom })
+
+
+            console.log(data)
+
             dispatch({
                 type: actionTypes.GET_DETAIL_PRODUCT,
-                DetailProduct: result.data
+                DetailProduct: data
             });
 
         }).catch(error => {
@@ -73,7 +80,7 @@ export const GetDetailProductAction = (id) => {
     }
 }
 export const GetListSearchProductAction = (key) => {
-    console.log(key)
+  
     return dispatch => {
         axios({
             url: settings.domain + `/products/SearchList/${key}`,
@@ -96,11 +103,14 @@ export const GetListSearchProductAction = (key) => {
 
 export const CreateProductAction = (fileSelected, product, clearFilde) => {
 
-    let account = JSON.parse(localStorage.getItem('infoUser')).account
+
 
 
     const fd = new FormData();
-    fd.append('image', fileSelected, fileSelected.name)
+    if (fileSelected !== null) {
+        fd.append('image', fileSelected, fileSelected.name);
+
+    }
     fd.append('name', product.name);
     fd.append('price', product.price);
     fd.append('quantity', product.quantity);
@@ -109,13 +119,18 @@ export const CreateProductAction = (fileSelected, product, clearFilde) => {
     fd.append('ram', product.ram);
     fd.append('Id_Brand', product.Id_Brand);
     fd.append('Id_Category', product.Id_Category);
-    // fd.append('nameBrand', product.nameBrand);
-    // fd.append('nameCategory', product.nameCategory);
+    fd.append('nameBrand', product.nameBrand);
+    fd.append('nameCategory', product.nameCategory);
     return dispatch => {
         axios({
-            url: settings.domain + `/products/${account}`,
+            url: settings.domain + `/products`,
             method: 'POST',
-            data: fd
+            data: fd,
+            headers: {
+                "auth-token": `${localStorage.getItem(settings.token)}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
         }).then(result => {
             console.log(result.data);
             dispatch(GetAllProductAction())
@@ -136,6 +151,11 @@ export const DeleteProductAction = (idProduct) => {
         axios({
             url: settings.domain + `/products/${idProduct}`,
             method: 'DELETE',
+            headers: {
+                "auth-token": `${localStorage.getItem(settings.token)}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
         }).then(result => {
             console.log(result.data);
             swal("Thông báo!", "Xóa thành công!", "success");
@@ -151,9 +171,10 @@ export const DeleteProductAction = (idProduct) => {
 //category action
 
 export const GetAllCategoryAction = () => {
+
     return dispatch => {
         axios({
-            url: settings.domain + '/category',
+            url: settings.domain + '/categories',
             method: 'GET',
 
         }).then(result => {
@@ -214,7 +235,7 @@ export const GetBrandByIdCategoryAction = (id) => {
 export const GetAllBrandAction = () => {
     return dispatch => {
         axios({
-            url: settings.domain + '/brand',
+            url: settings.domain + '/brands',
             method: 'GET',
 
         }).then(result => {
@@ -314,4 +335,60 @@ export const UpdateProductAction = (data) => {
         })
     }
 
+}
+
+export const CreateCategoryAction = (fileSelected, data) => {
+
+
+
+    const fd = new FormData();
+    fd.append('image', fileSelected, fileSelected.name)
+    fd.append('nameCategory', data.nameCategory);
+
+
+    return dispatch => {
+        axios({
+            url: settings.domain + '/categories',
+            method: "POST",
+            data: fd,
+            headers: {
+                "auth-token": `${localStorage.getItem(settings.token)}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then(result => {
+            console.log(result.data)
+            dispatch(GetAllCategoryAction())
+            swal("Thông báo!", "Thêm thành công!", "success");
+        }).catch(error => {
+            console.log(error.response)
+        })
+    }
+}
+
+export const CreateBrandAction = (fileSelected, data) => {
+
+
+    console.log("CreateBrand")
+    const fd = new FormData();
+    fd.append('image', fileSelected, fileSelected.name)
+    fd.append('nameBrand', data.nameBrand);
+    return dispatch => {
+        axios({
+            url: settings.domain + '/brands',
+            method: "POST",
+            data: fd,
+            headers: {
+                "auth-token": `${localStorage.getItem(settings.token)}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then(result => {
+            console.log(result.data)
+            dispatch(GetAllBrandAction())
+            swal("Thông báo!", "Thêm thành công!", "success");
+        }).catch(error => {
+            console.log(error.response)
+        })
+    }
 }

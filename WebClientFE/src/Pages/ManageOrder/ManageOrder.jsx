@@ -5,11 +5,10 @@ import { settings } from '../../Commons/Settings';
 import { GetAllMethodPaymentAction, GetAllMethodShippingAction, GetAllOrderByIdCustomerAction } from '../../Redux/Actions/ManageOrder.Action';
 import { BuyProductAction, CancelOrderAction } from './../../Redux/Actions/ManageUsers.Action'
 import { isEqual } from 'lodash'
-import { DeleteProductCartAction, InDecreaseProductCartAction, DeleteALLProductCartAction } from '../../Redux/Actions/cartAction';
+import { DeleteProductCartAction, DeleteALLProductCartAction, loadCartAction, AddProductCartAction } from '../../Redux/Actions/cartAction';
 import swal from 'sweetalert';
+import { formatMoney, formatPage } from '../../Commons/functionCommon';
 var dateFormat = require('dateformat');
-
-
 
 class ManageOrder extends Component {
 
@@ -50,16 +49,6 @@ class ManageOrder extends Component {
             console.log(this.state.Order)
         })
     }
-    formatPage = () => {
-         window.scrollTo(0, 0);
-    }
-    formatMoney = (price) => {
-        return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-    }
-
-    formatMoneyVND = (price) => {
-        return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + ' VNĐ';
-    }
     getSumPrice = (array) => {
 
         let SumPrice = array.reduce((sum, ele, index) => {
@@ -68,21 +57,20 @@ class ManageOrder extends Component {
         return SumPrice;
     }
 
-
     renderOrderProduct = (OrderDetail) => {
         return OrderDetail.map((ele, index) => {
             return (
                 <NavLink to={`/ThongTinSanPham/${ele._id}`} className="row" id="infoOrderEachItem" key={index}>
                     <div className='infoItem-order-left col-4'  >
-                        <img src={settings.domain + '/' + ele.image} alt="Error" />
+                        <img src={ele.images[0].url} alt="Error" />
 
                     </div>
 
                     <div className='text-OrderProduct col-8'>
                         <p>Tên sản phẩm : <span>{ele.name}</span> </p>
-                        <p>Giá bán : <span>{this.formatMoney(ele.price)} VNĐ</span> </p>
+                        <p>Giá bán : <span>{formatMoney(ele.price)}</span> </p>
                         <p>Số lượng : <span>{ele.quantity}</span> </p>
-                        <p>Tổng : <span>{this.formatMoney(ele.quantity * ele.price)} VNĐ</span> </p>
+                        <p>Tổng : <span>{formatMoney(ele.quantity * ele.price)}</span> </p>
                     </div>
 
                 </NavLink>
@@ -94,7 +82,7 @@ class ManageOrder extends Component {
     getSumPriceToPay = (sumPrice, feeShipping, tax) => {
 
         let BigSum = sumPrice + feeShipping + (tax * sumPrice / 100)
-        return this.formatMoney(BigSum);
+        return formatMoney(BigSum);
     }
 
     handleAlert = (id) => {
@@ -155,8 +143,8 @@ class ManageOrder extends Component {
                                 <p>Chi tiết thanh toán :</p>
                                 <ul className="">
 
-                                    <li>Tổng giá sản phẩm : {this.formatMoney(this.getSumPrice(element.OrderDetail))} VNĐ</li>
-                                    <li>Phí vận chuyển :  {this.formatMoney(element.FeeShipping)} VNĐ</li>
+                                    <li>Tổng giá sản phẩm : {formatMoney(this.getSumPrice(element.OrderDetail))}</li>
+                                    <li>Phí vận chuyển :  {formatMoney(element.FeeShipping)}</li>
                                     <li>Thuế thanh toán : {element.TexMethod} %</li>
                                     <li>Số tiền cần thanh toán :
                                             {this.getSumPriceToPay(this.getSumPrice(element.OrderDetail),
@@ -178,7 +166,7 @@ class ManageOrder extends Component {
                             :
                             <div className="bnt-reOrder">
                                 <button className='btn btn-danger'
-                                    onClick={() => this.handCancelOrder(this.props.user.account, element._id)}>Hủy đặt hàng</button>
+                                    onClick={() => this.handCancelOrder(this.props.DetailUser.account, element._id)}>Hủy đặt hàng</button>
                             </div>
                         }
 
@@ -212,43 +200,43 @@ class ManageOrder extends Component {
             });
     }
 
-    // handChooseQuantity = (id, quantity){
-    //     let product = this.props.
-    // }
-
     renderInputQuantity = (ele) => {
         return (
             <td className='td-2 td-quantity'>
                 <button className='btn btn-warning btn-decrease-quantity'
-                    onClick={() => this.props.InDecreaseProductCart(ele.id, false)}>-</button>
-                {/* <input type="number" id="quantity" name="quantity"
-                    value=  min="1" max="5" /> */}
+                    onClick={() => this.props.AddProductCart(ele.id, true, false)}>-</button>
+
                 <span className='span-quantity'>{ele.quantity}</span>
                 <button className='btn btn-warning btn-increase-quantity'
-                    onClick={() => this.props.InDecreaseProductCart(ele.id, true)}>+</button>
+                    onClick={() => this.props.AddProductCart(ele.id, false, false)}>+</button>
             </td>
         )
     }
 
+    renderLinkUrlProduct = (url) => {
+
+        let arr = url.split("/");
+        return arr[0] + arr[1] + '/.../' + arr[arr.length - 1];
+    }
+
     renderGioHang = () => {
-
         //Thay vì prop GioHang nhận từ component cha => thì ta dùng prop nhận từ redux về
-
         return this.props.ListProductsCart.map((ele, index) => {
             return (
                 <tr key={index}>
-                    <td className='td-1'>Điện thoại</td>
+                    <td className='td-1'>{ele.nameCategory}</td>
+                    <td className='td-1'>{ele.nameBrand}</td>
                     <td className='td-3'>
                         <NavLink to={`/ThongTinSanPham/${ele.id}`} >
-                            {settings.domain + '/' + ele.name}
+                            {this.renderLinkUrlProduct(settings.domain + ele.alias)}
                         </NavLink>
                     </td>
                     <td className='td-1'>{ele.name}</td>
                     <td className='td-2'>
-                        <img src={settings.domain + "/" + ele.image} width={75} height={100} alt="Error" /></td>
-                    <td className='td-2'>{this.formatMoneyVND(ele.price)}</td>
+                        <img src={ele.image} width={75} height={100} alt="Error" /></td>
+                    <td className='td-2'>{formatMoney(ele.price)}</td>
                     {this.renderInputQuantity(ele)}
-                    <td className='td-3'>{this.formatMoneyVND(ele.price * ele.quantity)}</td>
+                    <td className='td-3'>{formatMoney(ele.price * ele.quantity)}</td>
                     <td className='td-1'><button onClick={() => { this.props.DeleteProductCart(ele.id) }} className='btn btn-danger'>X</button></td>
 
 
@@ -328,7 +316,7 @@ class ManageOrder extends Component {
 
         fd.append('OrderDetail', JSON.stringify(arr));
 
-        this.props.BuyProduct(this.props.user.account, fd, this.handleResetCart);
+        this.props.BuyProduct(this.props.DetailUser.account, fd, this.handleResetCart);
 
         // axios.post(settings.domain + `/order/CreateOrder/${this.props.user.account}`, fd)
         //     .then(res =>
@@ -339,14 +327,12 @@ class ManageOrder extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();//chặn submit của browser
-        //Xử lý mật khẩu
-
-
 
         this.handleOrder(this.props.ListProductsCart, this.state.Order, false);
 
         // this.props.BuyProduct(this.props.user.account, order);
     }
+
     renderFormSubmitOrder = () => {
         return (
             <form action="Post" onSubmit={this.handleSubmit}>
@@ -410,6 +396,7 @@ class ManageOrder extends Component {
                             <thead>
                                 <tr>
                                     <th className='th-1'>Loại</th>
+                                    <th className='th-1'>Thương hiệu</th>
                                     <th className='th-3'>Link Sản phẩm</th>
                                     <th className='th-2'>Tên</th>
                                     <th className='th-2'>Hình ảnh</th>
@@ -425,6 +412,7 @@ class ManageOrder extends Component {
                                 {this.props.ListProductsCart.length > 0 ?
                                     this.renderGioHang() :
                                     <tr>
+                                        <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -477,27 +465,21 @@ class ManageOrder extends Component {
         )
     }
 
-
-
     componentDidMount() {
 
-        let { account } = this.props.match.params;
+        let { id } = this.props.match.params;
 
-        this.props.GetAllOrderByIdCustomer(account)
-
-        if (localStorage.getItem('infoUser')) {
-            this.props.GetInfoUser();
-        }
+        this.props.GetAllOrderByIdCustomer(id);
 
         if (localStorage.getItem('UserCart')) {
-            let cart = JSON.parse(localStorage.getItem('UserCart'))
-            this.props.loadCart(cart);
+            // let cart = JSON.parse(localStorage.getItem('UserCart'))
+            this.props.loadCart();
         }
 
 
         this.props.GetAllMethodShipping();
         this.props.GetAllMethodPayment();
-        this.formatPage()
+        formatPage();
     }
 
 
@@ -506,33 +488,44 @@ class ManageOrder extends Component {
 
         // console.log("componentDidUpdate : props", prevProps.listMethodPayment, this.props.listMethodPayment)
         // console.log("componentDidUpdate : State", prevState.Order, this.state.Order)
-        // if (!isEqual(prevProps.listMethodPayment, this.props.listMethodPayment)) {
+
+        if (!isEqual(prevProps.listMethodPayment, this.props.listMethodPayment)) {
 
 
-        //     this.setState({
-        //         Order: {
-        //             ...this.state.Order, Id_PaymentMethod: this.props.listMethodPayment[0]._id
-
-        //         }
-        //     }, () => {
-        //         console.log(this.state.Order)
-        //     });
-        // }
-
-
-        if (isEqual(this.state.Order.Id_PaymentMethod, "")) {
-            // let method = this.props.listMethodPayment[0]
-            // console.log(method)  
-            // code ngu
             this.setState({
                 Order: {
-                    ...this.state.Order, Id_PaymentMethod: "5f9ed20d4209cb5d9fbccd0d",
+                    ...this.state.Order, Id_PaymentMethod: this.props.listMethodPayment[0]._id
 
-                    Id_ShippingMethod: "5f9ed3004209cb5d9fbccd10"
                 }
             });
-
         }
+
+        if (!isEqual(prevProps.listMethodShipping, this.props.listMethodShipping)) {
+
+
+            this.setState({
+                Order: {
+                    ...this.state.Order, Id_ShippingMethod: this.props.listMethodShipping[0]._id
+
+                }
+            });
+        }
+
+        //GetAllOrderByIdCustomer
+
+        // if (isEqual(this.state.Order.Id_PaymentMethod, "")) {
+        //     // let method = this.props.listMethodPayment[0]
+        //     // console.log(method)  
+        //     // code ngu
+        //     this.setState({
+        //         Order: {
+        //             ...this.state.Order, Id_PaymentMethod: "5f9ed20d4209cb5d9fbccd0d",
+
+        //             Id_ShippingMethod: "5f9ed3004209cb5d9fbccd10"
+        //         }
+        //     });
+
+        // }
 
 
 
@@ -542,10 +535,11 @@ class ManageOrder extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        user: state.ManageUserReducer.user,
+        DetailUser: state.ManageUserReducer.DetailUser,
         ListProductsCart: state.ManageCartReducer.cart,
         arrayOrderConfirmed: state.ManageOrderReducer.listOrder.arrayOrderConfirmed,
         arrayOrderunConfirmed: state.ManageOrderReducer.listOrder.arrayOrderunConfirmed,
+
         listMethodPayment: state.ManageOrderReducer.listMethodPayment,
         listMethodShipping: state.ManageOrderReducer.listMethodShipping,
 
@@ -557,43 +551,21 @@ const mapDispatchToProps = dispatch => {
 
 
         //local
-        loadCart: (cart) => {
-            let action = {
-                type: 'Load_Cart',
-                cart
-            }
-            dispatch(action)
+        loadCart: () => {
+            dispatch(loadCartAction())
         },
-
-
-
-        insertCart: (arrayProduct) => {
-            dispatch({
-                type: 'INSERT_CART',
-                arrayProduct
-            })
-        },
-
-        GetInfoUser: () => {
-            dispatch({
-                type: "GETINFOUSER"
-            });
-        },
-
         DeleteProductCart: (id) => {
             dispatch(DeleteProductCartAction(id))
         },
         DeleteALLProductCart: () => {
             dispatch(DeleteALLProductCartAction())
         },
-        InDecreaseProductCart: (id, isDown) => {
-            dispatch(InDecreaseProductCartAction(id, isDown))
+        AddProductCart: (id, isDecrease, isAdd) => {
+            dispatch(AddProductCartAction(id, isDecrease, isAdd))
         },
 
 
         //api
-
-
         GetAllOrderByIdCustomer: (account) => {
             dispatch(GetAllOrderByIdCustomerAction(account))
         },

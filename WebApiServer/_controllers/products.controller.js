@@ -1,20 +1,23 @@
+const cloudinary = require('../cloudinary');
+const { generateAlias } = require('../generateAlias');
 const Brand = require('../_models/brands.model');
 const Category = require('../_models/categories.model');
 const Employee = require('../_models/employee.model');
-const Product = require('../_models/products.model')
+const Product = require('../_models/products.model');
+const SeriesProduct = require('../_models/seriesProduct.model');
 
 // get all
 module.exports.GetAllProduct = async function (req, res) {
-        
-    console.log("Nam");
-    Product.find({  })
-    .then((data) => {
-        console.log('Data: ', data);
-       res.json(data);
-    })
-    .catch((error) => {
-        console.log('error: ', error);
-    });
+
+
+    Product.find({})
+        .then((data) => {
+
+            res.json(data);
+        })
+        .catch((error) => {
+            console.log('error: ', error);
+        });
 
     // let products = await Product.find();
     // let index = products.length - 1;
@@ -64,7 +67,7 @@ module.exports.GetAllProduct = async function (req, res) {
     //     index--;
     // }
 
-    // res.json(products);
+    // res.json(arrayProduct);
 };
 
 // get detail product
@@ -74,6 +77,201 @@ module.exports.GetById = async function (req, res) {
     var products = await Product.findOne({ _id: id });
     res.json(products);
 };
+
+module.exports.GetProductByAlias = async function (req, res) {
+
+
+
+    let { aliasBrand, aliasCategory, aliasSeries, aliasProduct } = req.params;
+    var alias_product = aliasCategory + '/' + aliasBrand + '/' + aliasSeries + '/' + aliasProduct
+
+    console.log(alias_product)
+    //dien-thoai/apple/iphone-12-series/iphone-12-pro-528gb
+
+    Product.findOne({ alias_Product: alias_product }).then((products) => {
+        if (products) {
+            console.log(products)
+            res.json(products);
+        } else {
+            return res.status(404).json("Không tìm thấy sản phẩm ...")
+        }
+    });
+    // console.log(product)
+};
+module.exports.GetDetailProductByAlias = async function (req, res) {
+
+    let { aliasBrand, aliasCategory, aliasSeries, aliasProduct, keyDetailProduct } = req.params;
+    var alias_product = aliasCategory + '/' + aliasBrand + '/' + aliasSeries + '/' + aliasProduct
+
+
+    //dien-thoai/apple/iphone-12-series/iphone-12-pro-528gb
+
+    Product.findOne({ alias_Product: alias_product }).then((product) => {
+        if (product) {
+            if (keyDetailProduct != undefined) {
+
+
+                let option = product.options.find(element => element.rom == keyDetailProduct);
+                product.options = option;
+
+                res.json(product)
+            }
+
+            else {
+                res.json(product);
+            }
+
+        } else {
+            return res.status(404).json("Không tìm thấy sản phẩm ...")
+        }
+    });
+    // console.log(product)
+};
+
+module.exports.GetSeriesProductByAlias = async function (req, res) {
+
+    let { aliasBrand, aliasCategory, aliasSeries } = req.params;
+    let alias_series = aliasCategory
+
+    if (aliasBrand != undefined) {
+        alias_series += '/' + aliasBrand
+    }
+    if (aliasSeries != undefined) {
+        alias_series += '/' + aliasSeries
+    }
+
+    console.log(alias_series)
+    //dien-thoai/apple/iphone-12-series/iphone-12-pro-528gb
+
+
+    const regex = new RegExp(alias_series, 'i');
+
+    console.log("regex")
+    Product.find({ alias_Series: { $regex: regex } }).then((products) => {
+        if (products) {
+            res.json(products);
+        } else {
+            return res.status(404).json("Không tìm thấy sản phẩm ...")
+        }
+    });
+    // console.log(product)
+};
+
+// module.exports.GetSeriesProductByAlias = async function (req, res) {
+
+//     let { aliasBrand, aliasCategory, aliasSeries } = req.params;
+//     const alias_series = aliasCategory + '/' + aliasBrand + '/' + aliasSeries
+
+//     console.log(alias_series)
+//     Product.find({ alias_Series: 'dien-thoai/apple/iphone-12-series' }).then((products) => {
+//         if (products) {
+//             res.json(products);
+//         } else {
+//             return res.status(404).json("Không tìm thấy sản phẩm ...")
+//         }
+//     });
+//     // console.log(product)
+// };
+
+
+module.exports.createProduct = async function (req, res) {
+
+    // const result = await cloudinary.uploader.upload(req.file.path, {
+    //     folder: "Products",
+    //     resourse_type: "auto"
+    // });
+
+    const newImage = {
+        url: "result.secure_url",
+        Id_cloud: "result.public_id",
+
+        quantity: req.body.quantity,
+
+        color: req.body.color,
+        employee_Product: req.employee_product
+
+    }
+
+
+    const newOption = {
+        rom: req.body.rom,
+        price: req.body.price,
+        // sale_off: req.body.sale_off,
+        images: [newImage],
+        nameOption: req.body.name + " " + req.body.rom + "GB",
+        alias_Option: req.body.alias_Series_Product + '/' +
+            generateAlias(req.body.name + " " + req.body.rom + "GB")
+    }
+
+
+    const newProduct = {
+        alias_Series: req.body.alias_Series_Product,
+        name: req.body.name, // iphone 12 Mini, iphone 12 Pro , iphone 12 Pro max
+        alias_Product: req.body.alias_Series_Product + '/' + generateAlias(req.body.name),
+        options: [newOption],
+        ram: req.body.ram,
+    }
+
+    // const newProduct = {
+
+    //     newSeriesItem,
+    //     // contentDiscount: req.body.contentDiscount,
+    //     // screen: req.body.screen,
+    //     // camera: req.body.camera,
+    //     // boxItems: req.body.boxItems,
+    //     // cpu: req.body.cpu
+    //     // gpu: req.body.gpu,
+    //     // battery: req.body.battery,
+    //     // Specialfeatures: req.body.Specialfeatures,
+    //     // origin: req.body.origin,
+    //     // material : req.body.material,
+    //     // OS : req.body.OS,
+    //     // warranty_period : req.body.warranty_period,
+    //     // descript : req.body.descript
+    //     // }
+    // }
+
+    try {
+
+        Product.findOne({ alias_Product: newProduct.alias_Product }) // tìm kím series đã có ở db chưa
+            .then((product) => {
+                if (product) {//name đã tồn tại 
+                    // const indexSeries = product.seriesItems // iphone 12 || iphone 12 pro || iphone 12 pro max 
+                    //  .findIndex(ele => ele.name === req.body.name) //tìm kím tên product đã có ở db chưa
+
+                    product.options.push(newOption)
+                    product.save();
+                    res.json(product);
+
+                    // if (indexSeries >= 0) { // tên product đã tồn tại
+
+                    //     //exp : iphone 12 đã tồn tại => push iphone 12 128Gb 
+
+                    //     // if (productTest.seriesItems.options.aliasOption === newOption.aliasOption) {
+                    //     //     return res.status(400).json("Sản phẩm đã tồn tại, vui lòng kiểm tra lại ...")
+                    //     // }
+                    // } else {//tên product chưa đã tồn tại 
+                    //     //exp : push iphone 12 pro 
+                    //     product.seriesItems.push(newSeriesItem)
+                    //     product.save();
+                    //     res.json(product);
+                    // }
+
+                } else {//series chưa tồn tại 
+                    Product.create(newProduct)
+                        .then((product) => {
+                            res.json(product);
+                        })
+                        .catch((error) => {
+                            console.log('error: ', error);
+                        });
+                }
+            })
+    } catch (error) {
+        res.status(500).send("Vui lòng thử lại...")
+    }
+}
+
 
 
 module.exports.deleteProduct = async function (req, res) {
@@ -95,6 +293,15 @@ module.exports.GetByIdCategory = async function (req, res) {
 };
 
 
+module.exports.GetListSearchKey = async (req, res) => {
+
+    try {
+        console.log("req.params.key")
+    } catch (error) {
+        
+    }
+}
+
 
 module.exports.GetListSearch = async function (req, res) {
 
@@ -106,28 +313,27 @@ module.exports.GetListSearch = async function (req, res) {
 
 
     var string = req.params.key;
+
+    console.log(string)
+
+    let products = [];
+
     if (string === "getAll") {
         // get all products
-        var products = await Product.find();
+        products = await Product.find();
     }
     else {
-        var regex = new RegExp([string].join(""), "i");
-        console.log(regex);
+         const regex = new RegExp([string].join(""), "i");
 
-        var products = await Product.find({
+
+        products = await Product.find({
             name: {
                 $in: [regex]
             }
         });
     }
-    // console.log(string)
-    // var regex = new RegExp([string].join(""), "i");
 
-    // var products = await Product.find({
-    //     name: {
-    //         $in: [regex]
-    //     }
-    // });
+   
 
     res.json(products);
 };
@@ -163,7 +369,7 @@ function createAliasProduct(nameBrand, nameCategory, nameProduct) {
 }
 
 module.exports.AddProduct = async function (req, res) {
-
+    console.log(req.body)
     // check alias product is exist
     // const aliasProductExist = await Product.findOne({ alias: req.body.alias });
 
@@ -172,6 +378,7 @@ module.exports.AddProduct = async function (req, res) {
 
     let brand = await Brand.findOne({ _id: req.body.Id_Brand });
     let category = await Category.findOne({ _id: req.body.Id_Category });
+
     const alias = createAliasProduct(brand.nameBrand, category.nameCategory, req.body.name)
 
     let checkalias = await Product.findOne({ name: req.body.name });
@@ -194,7 +401,7 @@ module.exports.AddProduct = async function (req, res) {
             rom: req.body.rom,
             Id_Brand: req.body.Id_Brand,
             Id_Category: req.body.Id_Category,
-            image: `uploads/${req.file.filename}`,
+            image: `uploads/`,
             descripts: "mlemmlem",
             operator: "IOS",
             origin: "USA",

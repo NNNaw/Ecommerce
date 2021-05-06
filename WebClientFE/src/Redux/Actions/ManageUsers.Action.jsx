@@ -3,11 +3,15 @@ import { settings } from '../../Commons/Settings'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { GetAllOrderByIdCustomerAction } from './ManageOrder.Action'
+import { Roles } from '../../Commons/variable.common'
+
+
+
 
 export const RegisterAction = (user) => {
     return dispatch => {
         axios({
-            url: settings.domain + '/accounts/register',
+            url: settings.domain + '/accounts/registerCustomer',
             method: 'POST',
             data: user
         }).then(result => {
@@ -28,44 +32,83 @@ export const LoginUserAction = (user, checkRemeber, handleLogin) => {
             method: 'POST',
             data: user
         }).then(result => {
-            if (checkRemeber) {//kiểm trả user cho phép nhớ mật khẩu hay không
-                localStorage.setItem(settings.infoUser, JSON.stringify(result.data));
-            }
+
+            localStorage.setItem(settings.infoUser, JSON.stringify(result.data));
             localStorage.setItem(settings.token, result.data.token) // set token to localstore
+
+            console.log(result.data)
             dispatch({
-                type: actionTypes.LOGIN,
-                account: result.data,
+                type: actionTypes.GET_DETAIL_USER,
+                DetailUser: result.data
             })
+            switch (result.data.AccountType.name_AccountType) {
+                case Roles.Management:
 
-            if (result.data.Id_AccountType === "5f897dfc7a0f1b7a330a6b39") // admin
-            {
-                handleLogin("/quanly")
-                return
-            }
-            else if (result.data.Id_AccountType === "5f897dfc7a0f1b7a330a6b3a") // nhân viên
-            {
-                handleLogin("/nhanvien/TabQuanLySanPham")
-                return
-            }
-            else {
-                handleLogin("/")
-                return
-            }
+                    handleLogin("/quanly", Roles.Management)
 
+                    break;
+                case Roles.Employee:
+                    handleLogin("/nhanvien/TabQuanLySanPham", Roles.Employee);
+                    break;
+                default:
+                    handleLogin("/", Roles.Customer)
+                    break;
+            }
+            return
         }).catch(error => {
             console.log(error.response)
-            swal("Thông báo đăng nhập!", error.response.data, "error");
+            swal("Thông báo đăng nhập!", error.response, "error");
         })
     }
 }
 
 
+export const onLoadUserAction = (token) => {
 
-export const GetDetailUserAction = (id) => {
+
+    if (!token) {
+        return dispatch => { }
+    }
+    console.log("onload1")
     return dispatch => {
         axios({
-            url: settings.domain + `/accounts/customer/${id}`,
-            method: "GET"
+            url: settings.domain + `/customers/onload`,
+            method: "GET",
+            headers: {
+                "auth-token": `${token}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then(result => {
+            console.log("onload")
+            console.log(result.data)
+            dispatch({
+                type: actionTypes.GET_DETAIL_USER,
+                DetailUser: result.data
+            })
+        })
+            .catch(error => {
+                console.log(error.response)
+            })
+    }
+}
+
+export const GetDetailUserAction = (id) => {
+
+
+    let token = localStorage.getItem(settings.token);
+
+    if (!token) return
+
+    return dispatch => {
+        axios({
+            url: settings.domain + `/customers/${id}`,
+            method: "GET",
+            headers: {
+                "auth-token": `${token}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
         }).then(result => {
             console.log(result.data)
 
@@ -76,6 +119,7 @@ export const GetDetailUserAction = (id) => {
         })
             .catch(error => {
                 console.log(error.response)
+                // < Redirect to="/dangnhap" />
             })
     }
 }
@@ -103,7 +147,7 @@ export const UpdateCustomerAction = (user) => {
             });
             dispatch(GetDetailUserAction(user.account));
         }).catch(error => {
-            console.log(error.response)
+            console.log(error.response.data)
         })
     }
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './Register.css'
 import { NavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { RegisterAction} from '../../Redux/Actions/ManageUsers.Action'
+import { RegisterAction } from '../../Redux/Actions/ManageUsers.Action'
 import swal from 'sweetalert'
 
 class Register extends Component {
@@ -12,25 +12,26 @@ class Register extends Component {
             user: { // state tạm để lưu dữ liệu nhập
                 account: "",
                 password: "",
-                confirmPassword : "",
-                // address:"",
-                displayName:"",
+                confirmPassword: "",
+                displayName: "",
+                gender: "Nam",
+                name_AccountType: "Customer"
             },
-             userSubmit: { // state để submit về sever
+            userSubmit: { // state để submit về sever
                 account: "",
                 password: "",
-                address:"",
-                displayName:"",
+                address: "",
+                displayName: "",
             },
             errors: {
                 account: "",
                 password: "",
-                passwordValid : "",
-                address:"",
-                displayName:"",
+                passwordValid: "",
+                address: "",
+                displayName: "",
             },
             validate: {
-                passwordValid : ""
+                passwordValid: ""
             }
         }
     }
@@ -39,14 +40,13 @@ class Register extends Component {
             user: {
                 account: "",
                 password: "",
-                passwordValid : "",
-              
-                displayName:"",
+                passwordValid: "",
+
+                displayName: "",
             },
-            // temp: { matKhauTam: '' },
         })
 
-     
+
     }
     handleChange = (event) => {
         let { name, value } = event.target;
@@ -112,14 +112,15 @@ class Register extends Component {
         //Xử lý mật khẩu
 
         // let { name, value } = event.target;
-         let {password, confirmPassword} = this.state.user;
-         if (password.localeCompare(confirmPassword)) {
-            swal("Thông báo đăng nhập!",'Xác nhận mật khẩu không đúng!', "error");
+        
+        let { password, confirmPassword } = this.state.user;
+        if (password.localeCompare(confirmPassword)) {
+            swal("Thông báo đăng nhập!", 'Xác nhận mật khẩu không đúng!', "error");
             return;
-         }
+        }
         this.props.RegisterUser(this.state.user)
     }
-    
+
 
 
 
@@ -170,7 +171,7 @@ class Register extends Component {
                                         <input autoComplete="on" type="text" className="form-control" placeholder="Nhập tên hiển thị" id="displayName" name='displayName' value={this.state.user.displayName} onChange={this.handleChange} onBlur={this.handleError} />
                                         {/* {this.state.errors.matKhauTam !== '' ? <div className='text-danger '>{this.state.errors.matKhauTam}</div> : <div className='text-danger'></div>} */}
                                     </div>
-                                  
+
                                     <div className="form-group">
                                         <div className="float-right pt-2">
                                             <NavLink to="/dangnhap">Đăng nhập <i className="fas fa-arrow-right"></i></NavLink>

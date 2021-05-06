@@ -2,44 +2,54 @@ const mongoose = require('mongoose');
 
 
 var managementSchema = new mongoose.Schema({
-    fullName : {
+
+    
+    fullName: {
         type: String,
-        required : false,
-        default : "",
+        required: false,
+        default: "",
     },
-    address :  {
+    address: {
         type: String,
-        required : false,
-        default : "",
+        required: false,
+        default: "",
     },
-    phoneNumber :  {
+    phoneNumber: {
         type: Number,
-        required : false,
-        min : 10,
-        default : "",
+        required: false,
+        min: 10,
+        default: "",
     },
-    identitycard :  {
+    identitycard: {
         type: Number,
-        required : false,
-        min : 8,
-        default : "",
+        required: false,
+        min: 8,
+        default: "",
     },
-    gender:{
+    gender: {
         type: String,
-        default : "Nam",
-        min : 6,
-        max : 10
+        default: "Nam",
+        min: 6,
+        max: 10
     },
-    birthDay:{
-        type:Date,
+    birthDay: {
+        type: Date,
         default: "01/01/1999"
     },
-    account:   {
+    account: {
         type: String,
-        required : true,
-        min : 6,
-        max : 255
-    }
+        required: true,
+        min: 6,
+        max: 255
+    },
+    image: {
+        type: String,
+        required: false
+    },
+    cloudinary_id: {
+        type: String,
+        default: "Image Default"
+    },
    
   });
 

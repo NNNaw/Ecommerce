@@ -10,7 +10,7 @@ class Filter extends Component {
             return (
                 <NavLink to={`/TheoLoaiSanPham/${element._id}`} key={index} className='col-3 Filter-item'>
                     <div className="item-content">
-                        <img src={settings.domain + '/' + element.image} alt="Errors" />
+                        <img src={element.image} alt="Errors" />
                         <div className="infoNameCate">
                             <p className='text-nameCate'>{element.nameCategory}</p>
                         </div>

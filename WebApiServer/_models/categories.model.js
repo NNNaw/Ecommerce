@@ -2,29 +2,39 @@ const mongoose = require('mongoose');
 
 
 var categorySchema = new mongoose.Schema({
-    nameCategory : {
+    nameCategory: {
         type: String,
-        required : true,
+        required: true,
     },
-    aliasCategory : {
+    aliasCategory: {
         type: String,
-        required : true,
+        required: true,
     },
-    dateCreated : {
+    dateCreated: {
         type: Date,
-        default : Date.now,
+        default: Date.now,
     },
-    image : {
+    image: {
         type: String,
-        required : false,
+        required: false,
         default: ''
     },
-    Id_Management : {
-        type: String,
-        required : true,
+    managementCreated: {
+        _id: {
+            type: String,
+            required: true,
+        },
+        account: {
+            type: String,
+            required: true,
+        }
+
     },
-  });
+    cloudinary_id: {
+        type: String,
+    },
+});
 
-  var Category = mongoose.model('Category',categorySchema,'Categories');
+var Category = mongoose.model('Category', categorySchema, 'Categories');
 
-  module.exports = Category;
+module.exports = Category;

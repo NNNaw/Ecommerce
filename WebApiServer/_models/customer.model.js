@@ -1,7 +1,9 @@
+const { string } = require('@hapi/joi');
 const mongoose = require('mongoose');
 
 
 var customerSchema = new mongoose.Schema({
+    
     fullName: {
         type: String,
         required: false,
@@ -48,6 +50,10 @@ var customerSchema = new mongoose.Schema({
         type: String,
         required: false,
         default: "No Name"
+    },
+    cloudinary_id: {
+        type: String,
+        default: "Image Default"
     }
 });
 

@@ -17,21 +17,6 @@ import visa from './../../Assets/Images/Icons/visa.png'
 class Footer extends Component {
 
 
-    constructor(props) {
-        super(props);
-        this.state = {
-
-            // infoUser: {
-            //     account: JSON.parse(localStorage.getItem('infoUser')).account == null ? ""
-            //         : JSON.parse(localStorage.getItem('infoUser')).account,
-
-
-            // },
-
-        }
-
-    }
-
     render() {
         return (
             <div className='footer container-fluid'>
@@ -98,13 +83,13 @@ class Footer extends Component {
                  Chịu trách nhiệm nội dung: Nguyễn Trịnh Nhật Linh.</p>
 
 
-                {this.props.user != null &&
+                {this.props.DetailUser != null &&
                     <div className="footer-categories wow fadeIn">
                         {/* data-wow-duration="1.5s" */}
                         <ul className="list-cate">
                             <li className="item-cate-head">
                                 <NavLink
-                                    to={`/QuanLyDonHang/${this.props.user.account}`} >
+                                    to={`/QuanLyDonHang/${this.props.DetailUser.account}`} >
                                     <i className="fa fa-cart-plus" aria-hidden="true"></i>
                                     <span>Xem giỏ hàng</span>
                                 </NavLink>
@@ -112,7 +97,7 @@ class Footer extends Component {
 
                             <li>
                                 <NavLink
-                                    to={`/QuanLyTaiKhoan/${this.props.user.account}`} >
+                                    to={`/QuanLyTaiKhoan/user?id=${this.props.DetailUser.account}`} >
                                     <i className="fa fa-info" aria-hidden="true"></i>
                                     <span>Thông tin tài khoản</span>
                                 </NavLink>
@@ -146,33 +131,23 @@ class Footer extends Component {
     }
     LogOut = () => {
         localStorage.clear();
-
         document.getElementById("btn-logout").click();
 
-        this.props.GetInfoUser();
     }
     componentDidMount() {
 
-        if (localStorage.getItem('infoUser')) {
-            this.props.GetInfoUser();
-        }
     }
+
 }
 const mapStateToProps = (state) => {
     return {
-
-        user: state.ManageUserReducer.user,
+        DetailUser: state.ManageUserReducer.DetailUser,
     };
 }
 
 const mapDispatchToProps = dispatch => {
     return {
 
-        GetInfoUser: () => {
-            dispatch({
-                type: "GETINFOUSER"
-            });
-        }
     }
 }
 

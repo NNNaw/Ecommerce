@@ -168,8 +168,10 @@ body {
           border: 1px solid #000;
           border-right: none; }
         .header .header-right .form-inline .form-control:focus + .btn-search {
-          border: 1px solid #000;
-          border-left: none; }
+          background-color: #ffc312;
+          border: 1px solid #000; }
+          .header .header-right .form-inline .form-control:focus + .btn-search i {
+            color: #fff; }
       .header .header-right .form-inline .btn-search {
         border-radius: 0 0.25rem 0.25rem 0;
         background-color: #fff;
@@ -193,6 +195,18 @@ body {
       border: 1px solid #000; }
       .header .header-right .btn-group_Sign .btn_SignUp:hover {
         background-color: #fff; }
+
+.nav-header {
+  background-color: #252525;
+  padding: 10px 0; }
+  .nav-header .list-items-header {
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    width: 100%;
+    margin: 0; }
+    .nav-header .list-items-header li {
+      color: white; }
 
 .footer .footer-content {
   background-color: #fff;
@@ -611,58 +625,64 @@ body {
 .DetailProduct {
   margin: 50px 0; }
   .DetailProduct .DetailProduct-content {
-    background-color: white;
-    padding: 30px 0; }
-    .DetailProduct .DetailProduct-content .DetailProduct-left {
-      padding: 10px 0; }
-      .DetailProduct .DetailProduct-content .DetailProduct-left .text-title-header {
-        padding-left: 30px; }
-      .DetailProduct .DetailProduct-content .DetailProduct-left .class-img {
-        text-align: center; }
-        .DetailProduct .DetailProduct-content .DetailProduct-left .class-img img {
-          width: 60%;
-          margin: auto; }
-      .DetailProduct .DetailProduct-content .DetailProduct-left .class-info-product-bottom {
-        text-align: center; }
-        .DetailProduct .DetailProduct-content .DetailProduct-left .class-info-product-bottom .text-rating .span-rating {
-          vertical-align: bottom; }
-        .DetailProduct .DetailProduct-content .DetailProduct-left .class-info-product-bottom .text-ppp {
-          display: inline; }
-          .DetailProduct .DetailProduct-content .DetailProduct-left .class-info-product-bottom .text-ppp span {
-            font-weight: 400;
-            line-height: 19px;
-            font-size: 18px; }
-    .DetailProduct .DetailProduct-content .DetailProduct-right {
-      overflow: scroll;
-      max-height: 400px;
-      padding-right: 0; }
-      .DetailProduct .DetailProduct-content .DetailProduct-right .DetailProduct-list-info {
-        list-style: none; }
-        .DetailProduct .DetailProduct-content .DetailProduct-right .DetailProduct-list-info .DetailProduct-info-item p {
-          font-weight: 400;
-          line-height: 19px;
-          font-size: 19px; }
-        .DetailProduct .DetailProduct-content .DetailProduct-right .DetailProduct-list-info .DetailProduct-info-item span {
-          padding-left: 10px;
-          font-weight: 300;
-          line-height: 16px;
-          font-size: 16px; }
-    .DetailProduct .DetailProduct-content .DetailProduct-middle .group-buttons {
+    background-color: #fff; }
+    .DetailProduct .DetailProduct-content .Header-detail-product .Header-detail-product-title {
+      display: inline; }
+    .DetailProduct .DetailProduct-content .Header-detail-product .Header-rating {
       display: flex;
-      justify-content: space-around;
-      padding-bottom: 50px; }
-    .DetailProduct .DetailProduct-content .bg-class {
-      background-color: #e9ebec;
-      height: 70px;
-      margin: 0;
-      width: 100%; }
-    .DetailProduct .DetailProduct-content .introduction-product {
-      width: 90%;
-      margin: 0 auto; }
-      .DetailProduct .DetailProduct-content .introduction-product .text-product :first-child span {
-        padding-left: 30px; }
-      .DetailProduct .DetailProduct-content .introduction-product .text-product span {
-        font-weight: bold; }
+      justify-items: center; }
+      .DetailProduct .DetailProduct-content .Header-detail-product .Header-rating span {
+        font-size: 14px;
+        line-height: 35px; }
+    .DetailProduct .DetailProduct-content .Main-detail-product .Main-detail-product-middle .product-price p {
+      font-size: 26px;
+      font-weight: bold;
+      color: #4c4c4c;
+      margin-bottom: 10px; }
+      .DetailProduct .DetailProduct-content .Main-detail-product .Main-detail-product-middle .product-price p strong {
+        font-size: 19px;
+        font-weight: bold;
+        vertical-align: top;
+        margin-right: 10px; }
+      .DetailProduct .DetailProduct-content .Main-detail-product .Main-detail-product-middle .product-price p del {
+        display: inline-block;
+        vertical-align: middle;
+        margin: 0 5px;
+        font-size: 16px;
+        color: #7e7e7e;
+        text-decoration: line-through; }
+      .DetailProduct .DetailProduct-content .Main-detail-product .Main-detail-product-middle .product-price p label {
+        display: inline-block;
+        padding: 2px 6px 1px;
+        vertical-align: middle;
+        background-color: #fde5e5;
+        border: solid 1px #ffc6c6;
+        font-size: 12px;
+        color: #ff2d2d;
+        margin-right: 10px; }
+      .DetailProduct .DetailProduct-content .Main-detail-product .Main-detail-product-middle .product-price p .product-pernumpro {
+        background-color: #ff2842;
+        color: #fff;
+        border: solid 1px #ff677a;
+        margin-left: 0; }
+    .DetailProduct .DetailProduct-content .Main-detail-product .Main-detail-product-middle .text-shipping {
+      font-size: 14px;
+      font-weight: normal;
+      cursor: pointer;
+      color: #4f4f4f;
+      margin-bottom: 10px;
+      border-radius: 2px;
+      background-color: #f8f8f8;
+      border: solid 1px #eaeaea;
+      padding: 5px 10px; }
+      .DetailProduct .DetailProduct-content .Main-detail-product .Main-detail-product-middle .text-shipping .text-shipping {
+        display: inline;
+        padding-left: 10px; }
+    .DetailProduct .DetailProduct-content .Main-detail-product .Main-detail-product-middle .options-product {
+      display: flex; }
+      .DetailProduct .DetailProduct-content .Main-detail-product .Main-detail-product-middle .options-product .item-option {
+        margin-left: 10px;
+        background-color: silver; }
 
 .DetailUser {
   margin: 50px 0; }

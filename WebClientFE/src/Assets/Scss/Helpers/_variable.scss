@@ -4,28 +4,26 @@ $color-black-0: #29303b; // default
 $color-white: #fff; //default
 $color-red-0: #ec5252;
 $color-red-1: #521822;
-$color-red-2:#d0021b;
+$color-red-2: #d0021b;
 $color-black-light: #505763;
 $color-white-cream: #e9ebec;
+$color-white-cream-1: #f8f9fa;
 $color-black-dark: rgba(20, 23, 28, 0.1);
 $color-yellow-main: #ffc312;
-$color-yellow-0 : #76920f;
-$color-bg: #FFFFEB;
+$color-yellow-0: #76920f;
+$color-bg: #ffffeb;
 $color-green: #367517;
 $color-blue-0: #0088c6;
 $color-blue: #4dc6f4;
-$color-white-0 : #fff;
+$color-white-0: #fff;
 
-
-
-$color-black-1:#333;
+$color-black-1: #333;
 
 $color-gray-0: #ddd;
-$color-gray-1:#999;
+$color-gray-1: #999;
 
-
-$color-blue-1:#00adef;
-$color-blue-2:#4dc6f4;
+$color-blue-1: #00adef;
+$color-blue-2: #4dc6f4;
 
 // variable font-size
 $fs-0: 14px; //default
@@ -66,4 +64,3 @@ $breakpoints: (
     "medium": 768px,
     "small": 576px,
 );
-

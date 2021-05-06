@@ -27,7 +27,7 @@ export const GetAllOrderAction = () => {
 
 export const GetAllOrderByIdCustomerAction = (account) => {
 
-    return dispatch => {
+    return (dispatch) => {
         axios({
             url: settings.domain + `/order/${account}`,
             method: 'GET',

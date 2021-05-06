@@ -3,7 +3,7 @@ import { settings } from './../../Commons/Settings'
 import { connect } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 import swal from 'sweetalert'
-import { DeleteProductCartAction, InDecreaseProductCartAction } from '../../Redux/Actions/cartAction'
+import { AddProductCartAction, DeleteProductCartAction, InDecreaseProductCartAction } from '../../Redux/Actions/cartAction'
 
 class Cart extends Component {
     formatMoneyVND = (price) => {
@@ -20,14 +20,14 @@ class Cart extends Component {
                 <tr key={index}>
                     <td>Điện thoại</td>
                     <td>{ele.name}</td>
-                    <td><img src={settings.domain + "/" + ele.image} width={75} height={100} alt="Error" /></td>
+                    <td><img src={ele.image} width={60} height={50} alt="Error" /></td>
                     <td>{ele.price}</td>
                     <td>
                         <button className='btn btn-warning mr-1'
-                            onClick={() => this.props.InDecreaseProductCart(ele.id, false)}>-</button>
+                            onClick={() => this.props.AddProductCart(ele.id, true, false)}>-</button>
                         {ele.quantity}
                         <button className='btn btn-warning ml-1'
-                            onClick={() => this.props.InDecreaseProductCart(ele.id, true)}>+</button>
+                            onClick={() => this.props.AddProductCart(ele.id, false, false)}>+</button>
                     </td>
                     <td>{ele.price * ele.quantity}</td>
                     <td><button onClick={() => { this.props.DeleteProductCart(ele.id) }} className='btn btn-danger'>X</button></td>
@@ -49,7 +49,7 @@ class Cart extends Component {
         return this.props.ListProductsCart.map((ele, index) => {
             return (
                 <NavLink to={`/ThongTinSanPham/${ele.id}`} className="dropdown-item items-brief-cart" key={index}>
-                    <img src={settings.domain + '/' + ele.image} alt="Errors" />
+                    <img src={ele.image} alt="Errors" />
 
                     <p> {ele.name}</p>
                     <p className='text-cart-price'> {this.formatMoneyVND(ele.price)}</p>
@@ -77,9 +77,9 @@ class Cart extends Component {
         });
     }
     renderButtonPay = () => {
-        if (this.props.user !== null) {
+        if (this.props.DetailUser !== null) {
             return (
-                <NavLink to={`/QuanLyDonHang/${this.props.user.account}`} type="button"
+                <NavLink to={`/QuanLyDonHang/${this.props.DetailUser.account}`} type="button"
 
                     className="btn btn-success" >Thanh Toán</NavLink>
             )
@@ -95,19 +95,21 @@ class Cart extends Component {
         document.getElementById("NavLink-to-order").click();
     }
     render() {
+
         return (
-
-
             <div className="nav-item" >
 
                 <div className="dropdown dropdown-cart">
 
-                    <button onClick={() => this.moveToOrder()} type="button" className="btn-cart" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                    <button
+                    //  onClick={() => this.moveToOrder()}
+                     type="button" className="btn-cart" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
                         <span className="LengthCart">{this.renderLengthCart()}</span>
                         <i className="fa fa-cart-plus" aria-hidden="true"></i>
                         <p className="text-cart">Giỏ hàng</p>
                     </button>
+                    
                     <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <div className="dropdown-item">
                             <p className='text-header-card'>Sản phẩm mới thêm</p>
@@ -122,21 +124,21 @@ class Cart extends Component {
                         </button> */}
 
 
-                        {this.props.user !== null ?
+                        {this.props.DetailUser !== null ?
 
                             <div className="footer-brief-cart">
-                                <NavLink id="NavLink-to-order" to={`/QuanLyDonHang/${this.props.user.account}`} type="button"
+                                <NavLink id="NavLink-to-order"
+                                 to={`/QuanLyDonHang/${this.props.DetailUser.account}`} type="button"
                                     className="btn btn-success">Xem Giỏ hàng</NavLink>
                             </div>
                             :
                             <div className="footer-brief-cart">
-                                <button type="button" className="btn btn-danger btn-viewDetailCart" data-toggle="modal" data-target="#exampleModalCenter">
+                                <button type="button" className="btn btn-danger btn-viewDetailCart" 
+                                data-toggle="modal" data-target="#exampleModalCenter">
                                     <p className="text-cart">Xem Giỏ hàng</p>
                                 </button>
                             </div>
                         }
-
-
 
 
 
@@ -199,7 +201,7 @@ class Cart extends Component {
 const mapStateToProps = (state) => {
     return {
 
-        user: state.ManageUserReducer.user,
+        DetailUser: state.ManageUserReducer.DetailUser,
 
     };
 }
@@ -213,8 +215,8 @@ const mapDispatchToProps = dispatch => {
             dispatch(DeleteProductCartAction(id))
         },
 
-        InDecreaseProductCart: (id, isDown) => {
-            dispatch(InDecreaseProductCartAction(id, isDown))
+        AddProductCart: (id, isDecrease, isAdd) => {
+            dispatch(AddProductCartAction(id, isDecrease, isAdd))
         },
 
         GetInfoUser: () => {

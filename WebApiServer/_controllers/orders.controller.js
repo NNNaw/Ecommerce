@@ -94,16 +94,14 @@ module.exports.GetAllOrder = async function (req, res) {
 
 module.exports.GetAllOrderByIdCustomer = async function (req, res) {
 
-
-
-    let accountCustomer = req.params.id;
+    let accountCustomer = req.params.id;// id là account
 
     var listOrders = await Order.find({ account: accountCustomer }); // list all order
 
     var detailOrders = [];
 
     let index = listOrders.length - 1;
-    console.log("GetAllOrderByIdCustomer")
+
 
 
     while (index >= 0) {
@@ -111,12 +109,16 @@ module.exports.GetAllOrderByIdCustomer = async function (req, res) {
 
         var detailOrder = []; // list of product in each order
         //find info shipping
-        let shipping = await ShippingMethod.findOne({ _id: listOrders[index].Id_ShippingMethod });
-        let { nameShippingMethod, FeeShipping } = shipping;
+        try {
+            let shipping = await ShippingMethod.findOne({ _id: listOrders[index].Id_ShippingMethod });
+            var { nameShippingMethod, FeeShipping } = shipping;
+            let payment = await PaymentMethod.findOne({ _id: listOrders[index].Id_PaymentMethod });
+            var { namePaymentMethod, TexMethod } = payment;
+        } catch (error) {
 
+        }
         //find info payment
-        let payment = await PaymentMethod.findOne({ _id: listOrders[index].Id_PaymentMethod });
-        let { namePaymentMethod, TexMethod } = payment;
+
 
         // find info product
 
@@ -128,14 +130,17 @@ module.exports.GetAllOrderByIdCustomer = async function (req, res) {
 
         while (indexProduct >= 0) {
 
-            let product = await Product.findOne({ _id: listProduct[indexProduct].Id_Product });
-            console.log(indexProduct, product.name)
-            let { _id, name, image, price } = product;
+            var xxx = await Product.findOne({ _id: listProduct[indexProduct].Id_Product });
+
+            const { images, price, _id, name } = JSON.parse(JSON.stringify(xxx));
+
+
+            
             let infoProduct = {
-                _id: _id,
-                name: name,
-                image: image,
-                price: price,
+                _id,
+                name,
+                images,
+                price,
                 quantity: listProduct[indexProduct].quantity
             }
 
@@ -143,6 +148,7 @@ module.exports.GetAllOrderByIdCustomer = async function (req, res) {
 
             indexProduct--;
         }
+
 
         let itemOrder = {
             _id: _id,
@@ -152,11 +158,11 @@ module.exports.GetAllOrderByIdCustomer = async function (req, res) {
             address: address,
             note: note,
 
-            Id_PaymentMethod: payment._id,
+            // Id_PaymentMethod: payment._id,
             namePaymentMethod: namePaymentMethod,
             TexMethod: TexMethod,
 
-            Id_ShippingMethod: shipping._id,
+            // Id_ShippingMethod: shipping._id,
             nameShippingMethod: nameShippingMethod,
             FeeShipping: FeeShipping,
             OrderDetail: detailOrder
